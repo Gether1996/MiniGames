@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b5b93cdf-a01c-4b93-b857-d03dc61596b1" name="Changes" comment="">
+    <list default="true" id="b5b93cdf-a01c-4b93-b857-d03dc61596b1" name="Changes" comment="updated">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hangman_pygame/hangman_pygame.py" beforeDir="false" afterPath="$PROJECT_DIR$/hangman_pygame/hangman_pygame.py" afterDir="false" />
     </list>
@@ -106,6 +106,14 @@
       <option name="presentableId" value="Default" />
       <updated>1680161246492</updated>
     </task>
+    <task id="LOCAL-00001" summary="updated">
+      <created>1680176342966</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1680176342966</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -118,5 +126,9 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="updated" />
+    <option name="LAST_COMMIT_MESSAGE" value="updated" />
   </component>
 </project>

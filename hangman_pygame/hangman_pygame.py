@@ -15,7 +15,7 @@ for i in range(7):
     images.append(image)
 
 # game variables
-words = ["car", "motorcycle", "glass", "hippo", "cheese", "python", "gameboy"]
+words = ["car", "motocycle", "glass", "hippo", "cheese", "python", "gameboy", "toothpaste", "iphone", "yellow"]
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 FONT = pygame.font.Font(None, 36)
