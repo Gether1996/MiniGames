@@ -75,3 +75,38 @@ while True:
         win.blit(guess_surface, (220, 400))
         win.blit(surface_guesses_so_far, (220, 450))
         pygame.display.update()
+
+    win.fill(WHITE)
+    if right_guess == len(random_word):
+        message = f"Congratulations, you guessed the word {random_word.upper()}!"
+    else:
+        message = f"Sorry, you ran out of guesses. The word was {random_word.upper()}."
+    message1 = "Press 'n' to start a new game or 'q' to quit."
+    message_surface = FONT.render(message, True, BLACK)
+    message1_surface = FONT.render(message1, True, BLACK)
+
+    win.blit(message_surface, (30, 200))
+    win.blit(message1_surface, (30, 230))
+    pygame.display.update()
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_n:
+                    wrong_guess = 0
+                    right_guess = 0
+                    guess = ""
+                    list_guesses_so_far = []
+                    random_word = random.choice(words)
+                    underscores = ["_" for char in random_word]
+                    underscores_string = " ".join(underscores)
+                    underscores_surface = FONT_BIGGER.render(underscores_string, True, BLACK)
+                    break
+                elif event.key == pygame.K_q:
+                    pygame.quit()
+                    break
+        else:
+            continue
+        break
