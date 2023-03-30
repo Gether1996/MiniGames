@@ -20,23 +20,29 @@ words = ["car", "motorcycle", "glass", "hippo", "cheese", "python", "gameboy"]
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 FONT = pygame.font.Font(None, 36)
+FONT_BIGGER = pygame.font.Font(None, 60)
 guide = FONT.render("Insert character: ", True, BLACK)
 guide2 = FONT.render("Guesses so far: ", True, BLACK)
 
 while True:
     random_word = random.choice(words)
-    hangman_status = 0
+    underscores = ["_" for char in random_word]
+    underscores_string = " ".join(underscores)
+    underscores_surface = FONT_BIGGER.render(underscores_string, True, BLACK)
+    right_guess = 0
+    wrong_guess = 0
     list_guesses_so_far = []
-    guesses_string = ", ".join(list_guesses_so_far)
-    guesses_surface = FONT.render(guesses_string, True, BLACK)
+    string_guesses_so_far = ", ".join(list_guesses_so_far)
+    surface_guesses_so_far = FONT.render(string_guesses_so_far, True, BLACK)
     guess = ""
     guess_surface = FONT.render(guess, True, BLACK)
 
-    while hangman_status < 6:
+    while wrong_guess < 6 and right_guess < len(random_word):
         win.fill(WHITE)
-        win.blit(images[hangman_status], (300, 20))
+        win.blit(images[wrong_guess], (300, 20))
         win.blit(guide, (10, 400))
         win.blit(guide2, (10, 450))
+        win.blit(underscores_surface, (250, 280))
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -47,18 +53,26 @@ while True:
                 if event.key == pygame.K_BACKSPACE:
                     guess = guess[:-1]
                 elif event.key == pygame.K_RETURN:
-                    if guess == "" or guess in list_guesses_so_far:
+                    if guess == "" or guess.lower() in list_guesses_so_far:
                         continue
                     else:
-                        if guess not in random_word:
-                            hangman_status += 1
+
+                        if guess in random_word:
+                            indexes = [i for i, char in enumerate(random_word) if char == guess]
+                            for index in indexes:
+                                underscores[index] = guess
+                            underscores_string = " ".join(underscores)
+                            underscores_surface = FONT_BIGGER.render(underscores_string, True, BLACK)
+                            right_guess += len(indexes)
+                        elif guess not in random_word:
+                            wrong_guess += 1
                         list_guesses_so_far.append(guess)
                         guess = ""
-                        guesses_string = ", ".join(list_guesses_so_far)
-                        guesses_surface = FONT.render(guesses_string, True, BLACK)
+                        string_guesses_so_far = ", ".join(list_guesses_so_far)
+                        surface_guesses_so_far = FONT.render(string_guesses_so_far, True, BLACK)
 
                 guess_surface = FONT.render(guess, True, (0, 0, 0))
 
         win.blit(guess_surface, (220, 400))
-        win.blit(guesses_surface, (220, 450))
+        win.blit(surface_guesses_so_far, (220, 450))
         pygame.display.update()
