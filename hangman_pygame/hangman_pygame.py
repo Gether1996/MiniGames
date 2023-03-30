@@ -56,14 +56,14 @@ while True:
                         continue
                     else:
 
-                        if guess in random_word:
-                            indexes = [i for i, char in enumerate(random_word) if char == guess]
+                        if guess.lower() in random_word:
+                            indexes = [i for i, char in enumerate(random_word) if char == guess.lower()]
                             for index in indexes:
-                                underscores[index] = guess
+                                underscores[index] = guess.lower()
                             underscores_string = " ".join(underscores)
                             underscores_surface = FONT_BIGGER.render(underscores_string, True, BLACK)
                             right_guess += len(indexes)
-                        elif guess not in random_word:
+                        elif guess.lower() not in random_word:
                             wrong_guess += 1
                         list_guesses_so_far.append(guess.lower())
                         guess = ""
