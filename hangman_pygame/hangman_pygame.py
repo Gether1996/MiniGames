@@ -65,7 +65,7 @@ while True:
                             right_guess += len(indexes)
                         elif guess not in random_word:
                             wrong_guess += 1
-                        list_guesses_so_far.append(guess)
+                        list_guesses_so_far.append(guess.lower())
                         guess = ""
                         string_guesses_so_far = ", ".join(list_guesses_so_far)
                         surface_guesses_so_far = FONT.render(string_guesses_so_far, True, BLACK)
