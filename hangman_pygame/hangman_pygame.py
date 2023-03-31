@@ -31,20 +31,38 @@ class Category:
 
 human_body = Category("Human Body",
                       ['head', 'shoulder', 'armpit', 'forearm', 'finger', 'nose', 'foot', 'nail', 'heart', 'liver',
-                       'lungs', 'stomach', 'brain', 'spine', 'knuckle'])
+                       'lungs', 'stomach', 'brain', 'spine', 'knuckle', 'knee', 'elbow', 'toes', 'palm', 'eyebrow',
+                       'teeth', 'tongue', 'thigh', 'hip', 'ribs', 'neck', 'ear', 'cheek', 'lip', 'chin'])
 occupations = Category("Occupations",
                        ['doctor', 'lawyer', 'teacher', 'engineer', 'nurse', 'pilot', 'chef', 'scientist', 'artist',
-                        'musician', 'writer', 'programmer', 'accountant', 'architect', 'firefighter'])
+                        'musician', 'writer', 'programmer', 'accountant', 'architect', 'firefighter', 'police officer',
+                        'salesperson', 'mechanic', 'athlete', 'entrepreneur', 'designer', 'pharmacist', 'psychologist',
+                        'dentist', 'veterinarian', 'electrician', 'plumber', 'carpenter', 'farmer'])
 brands = Category("Brands",
-                  ['nike', 'adidas', 'apple', 'samsung', 'google', 'amazon', 'tesla', 'microsoft', 'sony', 'coca-cola',
-                   'pepsi', 'toyota', 'mcdonalds', 'kfc', 'burger king'])
+                  ['nike', 'adidas', 'apple', 'samsung', 'google', 'amazon', 'tesla', 'microsoft', 'sony', 'cocacola',
+                   'pepsi', 'toyota', 'mcdonalds', 'bugatti', 'gucci', 'prada', 'louisvuitton', 'chanel', 'ferrari',
+                   'rolex', 'omega', 'puma', 'underarmour', 'bmw', 'mercedes', 'audi', 'volkswagen', 'honda'])
 animals = Category("Animals",
                    ['dog', 'ladybug', 'lion', 'tiger', 'elephant', 'giraffe', 'zebra', 'monkey', 'bear', 'fox', 'wolf',
-                    'rabbit', 'horse', 'deer', 'sheep'])
+                    'rabbit', 'horse', 'deer', 'sheep', 'cat', 'hamster', 'snake', 'crocodile', 'penguin', 'dolphin',
+                    'shark', 'whale', 'owl', 'seagull', 'butterfly', 'octopus', 'crab', 'lobster'])
 plants = Category("Plants",
                   ['tree', 'flower', 'grass', 'weed', 'cactus', 'mushroom', 'fern', 'ivy', 'oak', 'bamboo', 'rose',
-                   'lily', 'daisy', 'tulip', 'sunflower'])
-all_categories = [human_body, occupations, brands, animals, plants]
+                   'lily', 'daisy', 'tulip', 'sunflower', 'maple', 'palm', 'pine', 'cherry', 'apple', 'orange',
+                   'watermelon', 'banana', 'coconut', 'aloe vera', 'lavender', 'peppermint', 'coriander', 'basil'])
+diseases = Category("Diseases",
+                    ['cancer', 'diabetes', 'arthritis', 'alzheimer', 'asthma', 'hypertension', 'malaria',
+                     'tuberculosis', 'ebola', 'parkinson', 'hiv', 'headache', 'pneumonia', 'jaundice', 'leprosy'])
+hobbies = Category("Hobbies",
+                   ['photography', 'gardening', 'cooking', 'painting', 'reading', 'writing', 'knitting', 'sewing',
+                    'scrapbooking', 'origami', 'woodworking', 'calligraphy', 'embroidery', 'cross-stitch', 'quilling'])
+sports = Category("Sports",
+                  ['football', 'basketball', 'tennis', 'golf', 'boxing', 'swimming', 'cycling', 'volleyball',
+                   'baseball', 'hockey', 'cricket', 'rugby', 'skiing', 'snowboarding', 'skateboarding'])
+meals = Category("Meals",
+                 ['lasagna', 'sushi', 'tacos', 'pizza', 'hamburger', 'ramen', 'steak', 'curry',
+                  'pancakes', 'rice', 'spaghetti', 'quesadilla', 'gnocchi', 'samosa', 'dumplings'])
+all_categories = [human_body, occupations, brands, animals, plants, diseases, hobbies, sports, meals]
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -53,7 +71,6 @@ FONT = pygame.font.SysFont("Comic Sans MS", 20)
 FONT_BIGGER = pygame.font.SysFont("Comic Sans MS", 40)
 guide = FONT.render("Type a character: ", True, BLACK)
 guide2 = FONT.render("Guesses so far: ", True, BLACK)
-guide3 = FONT.render("- letters without diacritics", True, BLACK)
 guide4 = FONT.render("- press Enter to confirm", True, BLACK)
 guide5 = FONT.render("- press Backspace to erase", True, BLACK)
 
@@ -82,9 +99,8 @@ while True:  # new game
         win.blit(images[wrong_guess], (480, 40))
         win.blit(guide, (20, 410))
         win.blit(guide2, (20, 450))
-        win.blit(guide3, (20, 150))
-        win.blit(guide4, (20, 190))
-        win.blit(guide5, (20, 230))
+        win.blit(guide4, (20, 130))
+        win.blit(guide5, (20, 170))
         win.blit(underscores_surface, (380, 310))
 
         for event in pygame.event.get():
@@ -124,18 +140,25 @@ while True:  # new game
 
     # new window after user completes a game, he/she gets to choose new game or to quit.
     win.fill(WHITE)
+    message1 = ""
     if right_guess == len(random_word):
         won.play()
         message = f"Congratulations, you guessed the word {random_word.upper()}!"
+        if wrong_guess < 2:
+            message1 = f"Finished with {wrong_guess} mistake! Impressive."
+        else:
+            message1 = f"Finished with {wrong_guess} mistakes. Good Job."
     else:
         failed.play()
         message = f"Sorry, you ran out of guesses. The word was {random_word.upper()}."
-    message1 = "Press 'n' to start a new game or 'q' to quit."
+    message2 = "Press 'n' to start a new game or 'q' to quit."
     message_surface = FONT.render(message, True, BLACK)
     message1_surface = FONT.render(message1, True, BLACK)
+    message2_surface = FONT.render(message2, True, BLACK)
 
     win.blit(message_surface, (30, 200))
-    win.blit(message1_surface, (30, 230))
+    win.blit(message1_surface, (30, 170))
+    win.blit(message2_surface, (30, 230))
     pygame.display.update()
 
     while True:
