@@ -4,9 +4,16 @@ import string
 
 # display
 pygame.init()
+pygame.mixer.init()
 WIDTH, HEIGHT = 800, 500
 win = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Hangman Game!")
+
+# sounds
+correct = pygame.mixer.Sound('sounds/correct-choice-43861.mp3')
+wrong = pygame.mixer.Sound('sounds/wrong-100536.mp3')
+won = pygame.mixer.Sound('sounds/success-1-6297.mp3')
+failed = pygame.mixer.Sound('sounds/failure-1-89170.mp3')
 
 # images
 images = []
@@ -41,16 +48,17 @@ all_categories = [human_body, occupations, brands, animals, plants]
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
-FONT = pygame.font.Font(None, 28)
-FONT_BIGGER = pygame.font.Font(None, 60)
+GREEN = (0, 255, 0)
+FONT = pygame.font.SysFont("Comic Sans MS", 20)
+FONT_BIGGER = pygame.font.SysFont("Comic Sans MS", 40)
 guide = FONT.render("Type a character: ", True, BLACK)
 guide2 = FONT.render("Guesses so far: ", True, BLACK)
 guide3 = FONT.render("- letters without diacritics", True, BLACK)
 guide4 = FONT.render("- press Enter to confirm", True, BLACK)
 guide5 = FONT.render("- press Backspace to erase", True, BLACK)
 
-while True:
-    # pick a random category and word from that category
+while True:  # new game
+    # get a random category and word from that category
     random_category = random.choice(all_categories)
     words = random_category.items
     category_name = random_category.name
@@ -93,6 +101,7 @@ while True:
                     else:
 
                         if guess.lower() in random_word:
+                            correct.play()
                             indexes = [i for i, char in enumerate(random_word) if char == guess.lower()]
                             for index in indexes:
                                 underscores[index] = guess.lower()
@@ -100,6 +109,7 @@ while True:
                             underscores_surface = FONT_BIGGER.render(underscores_string, True, BLACK)
                             right_guess += len(indexes)
                         elif guess.lower() not in random_word:
+                            wrong.play()
                             wrong_guess += 1
                         list_guesses_so_far.append(guess.lower())
                         guess = ""
@@ -112,10 +122,13 @@ while True:
         win.blit(surface_guesses_so_far, (210, 450))
         pygame.display.update()
 
+    # new window after user completes a game, he/she gets to choose new game or to quit.
     win.fill(WHITE)
     if right_guess == len(random_word):
+        won.play()
         message = f"Congratulations, you guessed the word {random_word.upper()}!"
     else:
+        failed.play()
         message = f"Sorry, you ran out of guesses. The word was {random_word.upper()}."
     message1 = "Press 'n' to start a new game or 'q' to quit."
     message_surface = FONT.render(message, True, BLACK)
