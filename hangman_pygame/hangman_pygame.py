@@ -14,20 +14,52 @@ for i in range(7):
     image = pygame.image.load(f"images/hangman{i}.png")
     images.append(image)
 
-# game variables
-words = ["car", "motocycle", "glass", "hippo", "cheese", "python", "gameboy", "toothpaste", "iphone", "yellow"]
+
+class Category:
+
+    def __init__(self, name, items):
+        self.name = name
+        self.items = items
+
+
+human_body = Category("Human Body",
+                      ['head', 'shoulder', 'armpit', 'forearm', 'finger', 'nose', 'foot', 'nail', 'heart', 'liver',
+                       'lungs', 'stomach', 'brain', 'spine', 'knuckle'])
+occupations = Category("Occupations",
+                       ['doctor', 'lawyer', 'teacher', 'engineer', 'nurse', 'pilot', 'chef', 'scientist', 'artist',
+                        'musician', 'writer', 'programmer', 'accountant', 'architect', 'firefighter'])
+brands = Category("Brands",
+                  ['nike', 'adidas', 'apple', 'samsung', 'google', 'amazon', 'tesla', 'microsoft', 'sony', 'coca-cola',
+                   'pepsi', 'toyota', 'mcdonalds', 'kfc', 'burger king'])
+animals = Category("Animals",
+                   ['dog', 'ladybug', 'lion', 'tiger', 'elephant', 'giraffe', 'zebra', 'monkey', 'bear', 'fox', 'wolf',
+                    'rabbit', 'horse', 'deer', 'sheep'])
+plants = Category("Plants",
+                  ['tree', 'flower', 'grass', 'weed', 'cactus', 'mushroom', 'fern', 'ivy', 'oak', 'bamboo', 'rose',
+                   'lily', 'daisy', 'tulip', 'sunflower'])
+all_categories = [human_body, occupations, brands, animals, plants]
+
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
-FONT = pygame.font.Font(None, 36)
+FONT = pygame.font.Font(None, 28)
 FONT_BIGGER = pygame.font.Font(None, 60)
-guide = FONT.render("Insert character: ", True, BLACK)
+guide = FONT.render("Type a character: ", True, BLACK)
 guide2 = FONT.render("Guesses so far: ", True, BLACK)
+guide3 = FONT.render("- letters without diacritics", True, BLACK)
+guide4 = FONT.render("- press Enter to confirm", True, BLACK)
+guide5 = FONT.render("- press Backspace to erase", True, BLACK)
 
 while True:
+    # pick a random category and word from that category
+    random_category = random.choice(all_categories)
+    words = random_category.items
+    category_name = random_category.name
+    category_surface = FONT_BIGGER.render(category_name, True, BLACK)
     random_word = random.choice(words)
     underscores = ["_" for char in random_word]
     underscores_string = " ".join(underscores)
     underscores_surface = FONT_BIGGER.render(underscores_string, True, BLACK)
+
     right_guess = 0
     wrong_guess = 0
     list_guesses_so_far = []
@@ -38,10 +70,14 @@ while True:
 
     while wrong_guess < 6 and right_guess < len(random_word):
         win.fill(WHITE)
-        win.blit(images[wrong_guess], (300, 20))
-        win.blit(guide, (10, 400))
-        win.blit(guide2, (10, 450))
-        win.blit(underscores_surface, (250, 280))
+        win.blit(category_surface, (40, 30))
+        win.blit(images[wrong_guess], (480, 40))
+        win.blit(guide, (20, 410))
+        win.blit(guide2, (20, 450))
+        win.blit(guide3, (20, 150))
+        win.blit(guide4, (20, 190))
+        win.blit(guide5, (20, 230))
+        win.blit(underscores_surface, (380, 310))
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -72,8 +108,8 @@ while True:
 
                 guess_surface = FONT.render(guess, True, (0, 0, 0))
 
-        win.blit(guess_surface, (220, 400))
-        win.blit(surface_guesses_so_far, (220, 450))
+        win.blit(guess_surface, (210, 410))
+        win.blit(surface_guesses_so_far, (210, 450))
         pygame.display.update()
 
     win.fill(WHITE)
