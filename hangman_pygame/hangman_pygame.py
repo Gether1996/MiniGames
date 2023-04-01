@@ -59,7 +59,7 @@ hobbies = Category("Hobbies",
                     'scrapbooking', 'origami', 'woodworking', 'calligraphy', 'embroidery', 'cross-stitch', 'quilling'])
 sports = Category("Sports",
                   ['football', 'basketball', 'tennis', 'golf', 'boxing', 'swimming', 'cycling', 'volleyball',
-                   'baseball', 'hockey', 'cricket', 'rugby', 'skiing', 'snowboarding', 'skateboarding'])
+                   'baseball', 'hockey', 'cricket', 'rugby', 'skiing', 'snowboarding', 'skating'])
 meals = Category("Meals",
                  ['lasagna', 'sushi', 'tacos', 'pizza', 'hamburger', 'ramen', 'steak', 'curry',
                   'pancakes', 'rice', 'spaghetti', 'quesadilla', 'gnocchi', 'samosa', 'dumplings'])
@@ -97,13 +97,14 @@ while True:  # new game
     while wrong_guess < 6 and right_guess < len(random_word):
         win.fill(WHITE)
         win.blit(category_surface, (40, 30))
-        win.blit(images[wrong_guess], (480, 40))
-        win.blit(heart, (380, 270))
+        win.blit(images[wrong_guess], (460, 110))
+        for i in range(1, 7-wrong_guess):
+            win.blit(heart, ((i * 40) - 10, 260))
         win.blit(guide, (20, 410))
         win.blit(guide2, (20, 450))
         win.blit(guide4, (20, 130))
         win.blit(guide5, (20, 170))
-        win.blit(underscores_surface, (380, 310))
+        win.blit(underscores_surface, (30, 330))
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
