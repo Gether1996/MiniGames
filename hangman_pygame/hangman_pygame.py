@@ -20,6 +20,7 @@ images = []
 for i in range(7):
     image = pygame.image.load(f"images/hangman{i}.png")
     images.append(image)
+heart = pygame.image.load("images/heart.png")
 
 
 class Category:
@@ -97,6 +98,7 @@ while True:  # new game
         win.fill(WHITE)
         win.blit(category_surface, (40, 30))
         win.blit(images[wrong_guess], (480, 40))
+        win.blit(heart, (380, 270))
         win.blit(guide, (20, 410))
         win.blit(guide2, (20, 450))
         win.blit(guide4, (20, 130))
