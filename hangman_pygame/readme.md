@@ -19,7 +19,7 @@
  - If User decides to play again, new random word is chosen and all stats like right guess, wrong guess, guesses so far etc. will reset to starting values
 
  ## New game
-![new_game](screenshots/starting screen.jpg)
+![new_game](screenshots/starting-screen.jpg)
 
 
  ## 5 wrong guesses
