@@ -1,23 +1,32 @@
 import random
 import pygame
 
+# game screen
 pygame.init()
+pygame.mixer.init()
 WIDTH, HEIGHT = 1000, 700
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("LOTR matching game!")
 
+# images
 images = []
 for i in range(1, 17):
     image = pygame.image.load(f"images/lotr ({i}).jpg")
     images.append(image)
     images.append(image)
 random.shuffle(images)
+eye = pygame.image.load("images/eye.png")
+ring = pygame.image.load("images/ring.jpg")
 
+# variables
 GREY = (100, 100, 100)
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
+BROWN = (180, 50, 30)
 FONT = pygame.font.SysFont("Comic Sans MS", 20)
 FONT_label = pygame.font.SysFont("Comic Sans MS", 50)
+
+song = pygame.mixer.Sound('song.mp3')
 
 SQUARE_SIZE = 100
 GAP_SIZE = 22
@@ -36,16 +45,18 @@ label = FONT_label.render("LOTR - matching game!", True, BLACK)
 revealed_squares = []
 matches = 0
 mismatches = 0
-guide = FONT.render("Missed matches: ", True, BLACK)
+guide = FONT.render("Missed matches: ", True, WHITE)
 
 while True:
 
     while matches != (len(images)) / 2:
-        screen.fill(WHITE)
-        pygame.draw.rect(screen, GREY, label_rect)
+        song.play()
+        screen.fill(BLACK)
+        pygame.draw.rect(screen, BROWN, label_rect)
         screen.blit(guide, (500, 600))
-        screen.blit(label, (220, 10))
-        mismatches_surface = FONT.render(str(mismatches), True, BLACK)
+        screen.blit(label, (280, 10))
+        screen.blit(eye, (120, 0))
+        mismatches_surface = FONT.render(str(mismatches), True, WHITE)
         screen.blit(mismatches_surface, (700, 600))
 
         for square_data in squares:
@@ -56,7 +67,8 @@ while True:
                 image = pygame.transform.scale(image, (SQUARE_SIZE, SQUARE_SIZE))
                 screen.blit(image, square_rect)
             else:
-                pygame.draw.rect(screen, GREY, square_rect)
+                image = pygame.transform.scale(ring, (SQUARE_SIZE, SQUARE_SIZE))
+                screen.blit(image, square_rect)
 
         pygame.display.update()
 
