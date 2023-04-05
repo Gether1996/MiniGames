@@ -1,5 +1,6 @@
 import random
 import pygame
+import copy
 
 # game screen
 pygame.init()
@@ -43,21 +44,26 @@ for row in range(4):
 label_rect = pygame.Rect(0, 0, WIDTH, 100)
 label = FONT_label.render("LOTR - matching game!", True, BLACK)
 revealed_squares = []
-matches = 0
 mismatches = 0
+record = 1000
 guide = FONT.render("Missed matches: ", True, WHITE)
+guide2 = FONT.render("Record: ", True, WHITE)
 
 while True:
 
-    while matches != (len(images)) / 2:
+    while not all(square["revealed"] for square in squares):
         song.play()
         screen.fill(BLACK)
         pygame.draw.rect(screen, BROWN, label_rect)
         screen.blit(guide, (500, 600))
+        screen.blit(guide2, (584, 640))
         screen.blit(label, (280, 10))
         screen.blit(eye, (120, 0))
         mismatches_surface = FONT.render(str(mismatches), True, WHITE)
         screen.blit(mismatches_surface, (700, 600))
+        if record != 1000:
+            record_surface = FONT.render(str(mismatches), True, WHITE)
+            screen.blit(mismatches_surface, (700, 640))
 
         for square_data in squares:
             square_rect = square_data["rect"]
@@ -81,15 +87,47 @@ while True:
                     if square_data["rect"].collidepoint(mouse_pos) and not square_data["revealed"]:
                         square_data["revealed"] = True
                         revealed_squares.append(square_data)
-                        if len(revealed_squares) == 2:
+                        if len(revealed_squares) == 3:
                             if images[squares.index(revealed_squares[0])] == images[squares.index(revealed_squares[1])]:
-                                revealed_squares = []
-                                matches += 1
+                                revealed_squares.pop(0)
+                                revealed_squares.pop(0)
                             else:
                                 revealed_squares[0]["revealed"] = False
                                 revealed_squares[1]["revealed"] = False
-                                revealed_squares = []
+                                revealed_squares.pop(0)
+                                revealed_squares.pop(0)
                                 mismatches += 1
 
+    # new window after user completes a game, he/she gets to choose new game or to quit.
+    screen.fill(BLACK)
+    message1 = "Congratulations! You have finished the game."
+    message2 = "Press 'n' to start a new game or 'q' to quit."
+
+    message1_surface = FONT.render(message1, True, WHITE)
+    message2_surface = FONT.render(message2, True, WHITE)
+
+    screen.blit(message1_surface, (30, 170))
+    screen.blit(message2_surface, (30, 230))
+    pygame.display.update()
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_n:
+                    if mismatches < record:
+                        pass
+                    revealed_squares = []
+                    mismatches = 0
+                    for square_data in squares:
+                        square_data["revealed"] = False
+                    break
+                elif event.key == pygame.K_q:
+                    pygame.quit()
+                    break
+        else:
+            continue
+        break
 
 
