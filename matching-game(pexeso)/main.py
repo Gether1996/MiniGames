@@ -19,7 +19,6 @@ eye = pygame.image.load("images/eye.png")
 ring = pygame.image.load("images/ring.jpg")
 
 # variables
-GREY = (100, 100, 100)
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 BROWN = (180, 50, 30)
@@ -51,19 +50,21 @@ def update_best_score(score):
         f.write(str(score))
 
 
+music_rect = pygame.Rect(20, 600, 150, 100)
 label_rect = pygame.Rect(0, 0, WIDTH, 100)
 label = FONT_label.render("LOTR - matching game!", True, BLACK)
 revealed_squares = []
 guide = FONT.render("Missed matches: ", True, WHITE)
 guide2 = FONT.render("Record: ", True, WHITE)
+song.play()
 
 while True:
     mismatches = 0
     record = get_best_score()
     while not all(square["revealed"] for square in squares):
-        song.play()
         screen.fill(BLACK)
         pygame.draw.rect(screen, BROWN, label_rect)
+        pygame.draw.rect(screen, BLACK, music_rect)
         screen.blit(guide, (500, 600))
         screen.blit(guide2, (584, 640))
         screen.blit(label, (280, 10))
@@ -94,6 +95,8 @@ while True:
                 pygame.quit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = pygame.mouse.get_pos()
+                if music_rect.collidepoint(event.pos):
+                    song.stop()
                 for square_data in squares:
                     if square_data["rect"].collidepoint(mouse_pos) and not square_data["revealed"]:
                         square_data["revealed"] = True
