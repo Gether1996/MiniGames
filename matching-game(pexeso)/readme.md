@@ -8,6 +8,17 @@
    - match = images will stay revealed
    - mismatch = images will get hidden again
  - User can only click on hidden squares, clicking on revealed image doesn't do anything
- - On bottom of game, there is a mismatch counter and highest local record (starting fresh at 1000, changing to users best score - lowest mismatches)
+ - At the bottom of game:
+   - clickable button to stop the music
+   - counter of mismatches
+   - and highest local record (starting fresh at 1000, changing to users best score - lowest mismatches)
  - After user reveal whole board, he/she is asked to play another game or quit
  - If user starts a new game, whole board gets hidden, mismatches will reset to 0 and record is rewritten(if user scored better than previous record)
+
+
+ ## New game
+![new_game](screenshots/new_game.jpg)
+
+
+ ## Ongoing game
+![ongoing](screenshots/ongoing.jpg)

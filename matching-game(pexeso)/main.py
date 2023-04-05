@@ -51,7 +51,7 @@ def update_best_score(score):
         f.write(str(score))
 
 
-music_rect = pygame.Rect(20, 620, 150, 80)
+music_rect = pygame.Rect(100, 620, 100, 80)
 label_rect = pygame.Rect(0, 0, WIDTH, 100)
 label = FONT_label.render("LOTR - matching game!", True, BLACK)
 revealed_squares = []
@@ -67,7 +67,7 @@ while True:
         screen.fill(BLACK)
         pygame.draw.rect(screen, BROWN, label_rect)
         pygame.draw.rect(screen, BLACK, music_rect)
-        screen.blit(note, (60, 620))
+        screen.blit(note, (120, 620))
         screen.blit(guide, (500, 600))
         screen.blit(guide2, (584, 640))
         screen.blit(label, (280, 10))
