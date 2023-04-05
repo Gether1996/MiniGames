@@ -17,6 +17,7 @@ for i in range(1, 17):
 random.shuffle(images)
 eye = pygame.image.load("images/eye.png")
 ring = pygame.image.load("images/ring.jpg")
+note = pygame.image.load("images/note.png")
 
 # variables
 WHITE = (255, 255, 255)
@@ -50,21 +51,23 @@ def update_best_score(score):
         f.write(str(score))
 
 
-music_rect = pygame.Rect(20, 600, 150, 100)
+music_rect = pygame.Rect(20, 620, 150, 80)
 label_rect = pygame.Rect(0, 0, WIDTH, 100)
 label = FONT_label.render("LOTR - matching game!", True, BLACK)
 revealed_squares = []
 guide = FONT.render("Missed matches: ", True, WHITE)
 guide2 = FONT.render("Record: ", True, WHITE)
-song.play()
+
 
 while True:
+    song.play()
     mismatches = 0
     record = get_best_score()
     while not all(square["revealed"] for square in squares):
         screen.fill(BLACK)
         pygame.draw.rect(screen, BROWN, label_rect)
         pygame.draw.rect(screen, BLACK, music_rect)
+        screen.blit(note, (60, 620))
         screen.blit(guide, (500, 600))
         screen.blit(guide2, (584, 640))
         screen.blit(label, (280, 10))
