@@ -1,6 +1,5 @@
 import random
 import pygame
-import copy
 
 # game screen
 pygame.init()
@@ -41,16 +40,26 @@ for row in range(4):
         squares.append({"rect": square_rect, "revealed": False})
 
 
+def get_best_score():
+    with open("best_score.txt", "r") as f:
+        best_score = int(f.read())
+        return best_score
+
+
+def update_best_score(score):
+    with open("best_score.txt", "w") as f:
+        f.write(str(score))
+
+
 label_rect = pygame.Rect(0, 0, WIDTH, 100)
 label = FONT_label.render("LOTR - matching game!", True, BLACK)
 revealed_squares = []
-mismatches = 0
-record = 1000
 guide = FONT.render("Missed matches: ", True, WHITE)
 guide2 = FONT.render("Record: ", True, WHITE)
 
 while True:
-
+    mismatches = 0
+    record = get_best_score()
     while not all(square["revealed"] for square in squares):
         song.play()
         screen.fill(BLACK)
@@ -61,9 +70,11 @@ while True:
         screen.blit(eye, (120, 0))
         mismatches_surface = FONT.render(str(mismatches), True, WHITE)
         screen.blit(mismatches_surface, (700, 600))
-        if record != 1000:
-            record_surface = FONT.render(str(mismatches), True, WHITE)
-            screen.blit(mismatches_surface, (700, 640))
+        if record == 1000:
+            pass
+        else:
+            record_surface = FONT.render(str(record), True, WHITE)
+            screen.blit(record_surface, (700, 640))
 
         for square_data in squares:
             square_rect = square_data["rect"]
@@ -117,7 +128,8 @@ while True:
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_n:
                     if mismatches < record:
-                        pass
+                        best_score = mismatches
+                        update_best_score(best_score)
                     revealed_squares = []
                     mismatches = 0
                     for square_data in squares:
