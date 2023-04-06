@@ -61,6 +61,7 @@ guide2 = FONT.render("Record: ", True, WHITE)
 
 while True:
     song.play()
+    random.shuffle(images)
     mismatches = 0
     record = get_best_score()
     while not all(square["revealed"] for square in squares):
