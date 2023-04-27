@@ -1,9 +1,9 @@
 import pygame
+import time
 
 pygame.init()
 screen = pygame.display.set_mode((540, 640))
 pygame.display.set_caption("TicTac")
-clock = pygame.time.Clock()
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
@@ -13,9 +13,9 @@ lower_bar = pygame.rect.Rect(0, 540, 540, 100)
 imageX = pygame.image.load("imageX.png")
 imageO = pygame.image.load("imageO.png")
 FONT = pygame.font.SysFont("Comic Sans MS", 26)
+BIGGER_FONT = pygame.font.SysFont("Comic Sans MS", 50)
 again_text = FONT.render("AGAIN", True, BLACK)
 again_rect = pygame.rect.Rect(20, 560, 140, 60)
-
 
 SQUARE_SIZE = 178
 GAP_SIZE = 2
@@ -53,8 +53,24 @@ player_O_squares = []
 player_O_wins = 0
 
 
-while True:
+def reset_game(rev_squares, p_x_squares, p_o_squares):
+    for square in squares:
+        square["revealed"] = False
+    rev_squares.clear()
+    p_x_squares.clear()
+    p_o_squares.clear()
 
+
+def show_winner_message(winner):
+    message = f"Player {winner} wins!"
+    text = BIGGER_FONT.render(message, True, WHITE)
+    text_rect = text.get_rect(center=(540/2, 600/2))
+    screen.blit(text, text_rect)
+    pygame.display.update()
+    time.sleep(1)
+
+
+while True:
     text1 = FONT.render(f"X wins: {player_X_wins}", True, WHITE)
     text2 = FONT.render(f"O wins: {player_O_wins}", True, WHITE)
     which_player_is_playing = FONT.render(f"{player}'s move", True, WHITE)
@@ -88,29 +104,17 @@ while True:
                         player_O_squares.append(square_data["number"])
 
             if again_rect.collidepoint(mouse_pos):
-                for square_data in squares:
-                    square_data["revealed"] = False
-                revealed_squares = []
-                player_X_squares = []
-                player_O_squares = []
+                reset_game(revealed_squares, player_X_squares, player_O_squares)
 
     if check_for_win(player_X_squares):
         player_X_wins += 1
-        pygame.time.wait(1000)
-        for square_data in squares:
-            square_data["revealed"] = False
-        revealed_squares = []
-        player_X_squares = []
-        player_O_squares = []
+        show_winner_message("X")
+        reset_game(revealed_squares, player_X_squares, player_O_squares)
 
     if check_for_win(player_O_squares):
         player_O_wins += 1
-        pygame.time.wait(1000)
-        for square_data in squares:
-            square_data["revealed"] = False
-        revealed_squares = []
-        player_X_squares = []
-        player_O_squares = []
+        show_winner_message("O")
+        reset_game(revealed_squares, player_X_squares, player_O_squares)
 
     for square in squares:
         square_rect = square["rect"]
