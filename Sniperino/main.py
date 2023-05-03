@@ -19,7 +19,6 @@ zombie_boss = pygame.image.load('images/zombie_boss.png').convert_alpha()
 bullet = pygame.image.load('images/power_bullet.png').convert_alpha()
 fire_bullet = pygame.image.load('images/flame_shot.png').convert_alpha()
 
-
 # positions
 sniper_position_y = 30
 bullet_position_x = 195
@@ -42,7 +41,18 @@ class Zombie:
             self.hit_points = 4
         else:
             self.rect = self.name_image.get_rect(topleft=(2000, random.choice(random_y_position_for_zombie[0:4])))
-            self.hit_points = 20
+            self.hit_points = 12
+
+
+class Bullet:
+    def __init__(self, name_image):
+        self.name_image = name_image
+        if self.name_image == bullet:
+            self.damage = 1
+            self.rect = self.name_image.get_rect(center=(bullet_position_x, sniper_position_y + 45))
+        elif self.name_image == fire_bullet:
+            self.damage = 4
+            self.rect = self.name_image.get_rect(center=(bullet_position_x, sniper_position_y + 45))
 
 
 zombies = []
@@ -56,9 +66,12 @@ for x in range(2):
 zombie = Zombie(zombie_boss)
 zombies.append(zombie)
 
+num_of_bullets = 0
 bullets = []
 
 while True:
+    sniper_rect = sniper.get_rect(topleft=(30, sniper_position_y))
+    velocity = 0.2
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -69,14 +82,15 @@ while True:
             if event.key == pygame.K_DOWN and sniper_position_y < 650:
                 sniper_position_y += 160
             if event.key == pygame.K_SPACE:
-                if len(bullets) % 10 == 0 and len(bullets) > 1:
-                    bullet_image = fire_bullet
+                num_of_bullets += 1
+                if num_of_bullets % 10 == 0:
+                    new_bullet = Bullet(fire_bullet)
                     fire_shot_sound.play()
+                    bullets.append(new_bullet)
                 else:
                     shot_sound.play()
-                    bullet_image = bullet
-                fired_shot = bullet_image.get_rect(center=(bullet_position_x, sniper_position_y + 45))
-                bullets.append((fired_shot, bullet_image))
+                    new_bullet = Bullet(bullet)
+                    bullets.append(new_bullet)
 
         if event.type == ADD_ZOMBIE_EVENT:
             zombie = Zombie(zombie1)
@@ -85,31 +99,32 @@ while True:
     screen.blit(background, (0, 0))
     screen.blit(sniper, (30, sniper_position_y))
 
-    for bullet_rect, bullet_image in bullets:
-        bullet_rect.x += 15
-        screen.blit(bullet_image, bullet_rect)
-
+    for bullet_in_list in bullets:
+        bullet_in_list.rect.x += 15
+        screen.blit(bullet_in_list.name_image, bullet_in_list.rect)
         for zombie in zombies:
-            if bullet_rect.colliderect(zombie.rect):
-                zombie.hit_points -= 1
-                bullets.remove((bullet_rect, bullet_image))
+            if bullet_in_list.rect.colliderect(zombie.rect):
+                zombie.hit_points -= bullet_in_list.damage
+                bullets.remove(bullet_in_list)
                 if zombie.hit_points <= 0:
-                    zombie.rect.x = 1600
+                    velocity += 0.1
                     if zombie.name_image == zombie1:
+                        zombie.rect.x = 1600
                         zombie.hit_points = 2
                     elif zombie.name_image == zombie2:
+                        zombie.rect.x = 1800
                         zombie.hit_points = 4
                     else:
+                        zombie.rect.x = 2200
                         zombie.hit_points = 20
 
-
-    velocity = 0.2
     for zombie in zombies:
         velocity += 0.2
         zombie.rect.x -= velocity
         if zombie.hit_points > 0:
             screen.blit(zombie.name_image, zombie.rect)
-
+        if zombie.rect.colliderect(sniper_rect):
+            quit()
 
     pygame.display.update()
     clock.tick(60)
