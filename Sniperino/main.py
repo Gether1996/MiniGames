@@ -21,6 +21,8 @@ bullet = pygame.image.load('images/power_bullet.png').convert_alpha()
 fire_bullet = pygame.image.load('images/flame_shot.png').convert_alpha()
 sound_on = pygame.image.load('images/sound_on.png').convert_alpha()
 sound_off = pygame.image.load('images/sound_off.png').convert_alpha()
+legend = pygame.image.load('images/legend.png').convert_alpha()
+legend2 = pygame.image.load('images/legend2.png').convert_alpha()
 
 # positions and rectangles
 sniper_position_y = 20
@@ -86,6 +88,8 @@ while True:
     velocity = 0.2
     screen.blit(background, (0, 0))
     pygame.draw.rect(screen, BROWN, UI_rect)
+    screen.blit(legend, (1250, 705))
+    screen.blit(legend2, (900, 735))
     screen.blit(sniper, (30, sniper_position_y))
 
     #######################################################                EVENTS          ####################
