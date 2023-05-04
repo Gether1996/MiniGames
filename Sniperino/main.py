@@ -27,7 +27,6 @@ sniper_position_y = 20
 bullet_position_x = 160
 UI_rect = pygame.Rect(0, 700, 1500, 200)
 
-
 # colors
 BROWN = (205, 133, 63)
 
@@ -68,11 +67,11 @@ zombies = []
 # creating starting zombies
 for i in range(3):
     zombie = Zombie(zombie1)
-    zombie.rect.x += 100*i
+    zombie.rect.x += 100 * i
     zombies.append(zombie)
 for x in range(2):
     zombie = Zombie(zombie2)
-    zombie.rect.x += 150*x
+    zombie.rect.x += 150 * x
     zombies.append(zombie)
 zombie_boss1 = Zombie(zombie_boss)
 zombies.append(zombie_boss1)
@@ -85,6 +84,11 @@ while True:
     sniper_rect = sniper.get_rect(topleft=(30, sniper_position_y))
     sound_rect = sound_on.get_rect(topleft=(50, 760))
     velocity = 0.2
+    screen.blit(background, (0, 0))
+    pygame.draw.rect(screen, BROWN, UI_rect)
+    screen.blit(sniper, (30, sniper_position_y))
+
+    #######################################################                EVENTS          ####################
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -116,19 +120,7 @@ while True:
             else:
                 sound_turned_on = True
 
-    screen.blit(background, (0, 0))
-    pygame.draw.rect(screen, BROWN, UI_rect)
-    screen.blit(sniper, (30, sniper_position_y))
-
-    if sound_turned_on:
-        screen.blit(sound_on, sound_rect)
-        bullet_sound.set_volume(0.4)
-        fire_shot_sound.set_volume(0.6)
-    else:
-        screen.blit(sound_off, sound_rect)
-        bullet_sound.set_volume(0)
-        fire_shot_sound.set_volume(0)
-
+    #######################################################         BULLETS / ZOMBIES          ####################
     for bullet_in_list in bullets:
         bullet_in_list.rect.x += 15
         screen.blit(bullet_in_list.name_image, bullet_in_list.rect)
@@ -158,6 +150,17 @@ while True:
             screen.blit(zombie.name_image, zombie.rect)
         if zombie.rect.colliderect(sniper_rect):
             quit()
+
+    if sound_turned_on:
+        screen.blit(sound_on, sound_rect)
+        bullet_sound.set_volume(0.4)
+        fire_shot_sound.set_volume(0.6)
+    else:
+        screen.blit(sound_off, sound_rect)
+        bullet_sound.set_volume(0)
+        fire_shot_sound.set_volume(0)
+
+
 
     pygame.display.update()
     clock.tick(60)
