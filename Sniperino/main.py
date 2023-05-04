@@ -57,6 +57,7 @@ class Zombie:
 class Bullet:
     def __init__(self, name_image):
         self.name_image = name_image
+        self.visible = True
         if self.name_image == bullet:
             self.damage = 1
             self.rect = self.name_image.get_rect(center=(bullet_position_x, sniper_position_y + 40))
@@ -127,11 +128,12 @@ while True:
     #######################################################         BULLETS / ZOMBIES          ####################
     for bullet_in_list in bullets:
         bullet_in_list.rect.x += 15
-        screen.blit(bullet_in_list.name_image, bullet_in_list.rect)
+        if bullet_in_list.visible:
+            screen.blit(bullet_in_list.name_image, bullet_in_list.rect)
         for zombie in zombies:
-            if bullet_in_list.rect.colliderect(zombie.rect):
+            if bullet_in_list.rect.colliderect(zombie.rect) and bullet_in_list.visible:
                 zombie.hit_points -= bullet_in_list.damage
-                bullets.remove(bullet_in_list)
+                bullet_in_list.visible = False
                 if zombie.hit_points <= 0:
                     velocity += 0.1
                     if zombie.name_image == zombie1:
@@ -163,8 +165,6 @@ while True:
         screen.blit(sound_off, sound_rect)
         bullet_sound.set_volume(0)
         fire_shot_sound.set_volume(0)
-
-
 
     pygame.display.update()
     clock.tick(60)
