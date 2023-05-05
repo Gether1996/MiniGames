@@ -17,6 +17,7 @@ sniper = pygame.image.load('images/sniper.png').convert_alpha()
 zombie1 = pygame.image.load('images/zombie.png').convert_alpha()
 zombie2 = pygame.image.load('images/zombie2.png').convert_alpha()
 zombie_boss = pygame.image.load('images/zombie_boss.png').convert_alpha()
+final_boss = pygame.image.load('images/final_boss.png').convert_alpha()
 bullet = pygame.image.load('images/power_bullet.png').convert_alpha()
 fire_bullet = pygame.image.load('images/flame_shot.png').convert_alpha()
 sound_on = pygame.image.load('images/sound_on.png').convert_alpha()
@@ -62,10 +63,13 @@ class Zombie:
         elif self.name_image == zombie2:
             self.rect = self.name_image.get_rect(topleft=(1500, random.choice(random_y_spawning_positions)))
             self.hit_points = 4
-        else:
+        elif self.name_image == zombie_boss:
             self.rect = self.name_image.get_rect(topleft=(1500, random.choice(random_y_spawning_positions[0:4])))
             self.rect = self.rect.inflate(-30, -30)
             self.hit_points = 12
+        else:
+            self.rect = self.name_image.get_rect(topleft=(1500, 100))
+            self.hit_points = 35
 
 
 class Bullet:
@@ -116,6 +120,7 @@ score = 0
 stage_of_game = "starting menu"
 starting_menu = True
 reset_zombies = True
+summon_final_boss = True
 
 
 def get_zombie_list_based_on_stage():
@@ -127,11 +132,23 @@ def get_zombie_list_based_on_stage():
         return zombies_stage3
 
 
-def reset_zombies_x_position():
+def reset_zombies_x_position(x_position):
     velocity = 0.2
     for i, zombie in enumerate(get_zombie_list_based_on_stage()):
-        zombie.rect.x = 1500 + i * 50
-    return velocity, reset_zombies
+        zombie.rect.x = x_position + i * 50
+    return velocity
+
+
+def fill_zombies_stage3(zombie_list):
+    for o in range(6):
+        zombie_to_append = Zombie(zombie1)
+        zombie_list.append(zombie_to_append)
+    for u in range(4):
+        zombie2_to_append = Zombie(zombie2)
+        zombie_list.append(zombie2_to_append)
+    for boss in range(3):
+        boss_to_append = Zombie(zombie_boss)
+        zombie_list.append(boss_to_append)
 
 
 while True:
@@ -146,22 +163,22 @@ while True:
         screen.blit(created_by, (550, 850))
 
         for i in range(3):
-            box_square = clickable_square.get_rect(topleft=(665, 250 + i * 120))
-            screen.blit(clickable_square, box_square)
-            boxes.append(box_square)
+            again_button = clickable_square.get_rect(topleft=(665, 250 + i * 120))
+            screen.blit(clickable_square, again_button)
+            boxes.append(again_button)
         if starting_menu:
-            text1 = FONT.render("START", True, BLACK)
-            text2 = FONT.render("STAGES", True, BLACK)
+            again_text = FONT.render("START", True, BLACK)
+            quit_text = FONT.render("STAGES", True, BLACK)
             text3 = FONT.render("QUIT", True, BLACK)
-            screen.blit(text1, (700, 270))
-            screen.blit(text2, (690, 390))
+            screen.blit(again_text, (700, 270))
+            screen.blit(quit_text, (690, 390))
             screen.blit(text3, (705, 510))
         else:
-            text1 = FONT.render("1", True, BLACK)
-            text2 = FONT.render("2", True, BLACK)
+            again_text = FONT.render("1", True, BLACK)
+            quit_text = FONT.render("2", True, BLACK)
             text3 = FONT.render("3", True, BLACK)
-            screen.blit(text1, (756, 270))
-            screen.blit(text2, (750, 390))
+            screen.blit(again_text, (756, 270))
+            screen.blit(quit_text, (750, 390))
             screen.blit(text3, (750, 510))
 
         pygame.display.update()
@@ -199,13 +216,18 @@ while True:
     while stage_of_game in [1, 2, 3]:
         if reset_zombies:
             reset_zombies = False
-            reset_zombies_x_position()
+            reset_zombies_x_position(1500)
         sniper_rect = sniper.get_rect(topleft=(30, sniper_position_y))
         sound_rect = sound_on.get_rect(topleft=(150, 780))
+        again_button = clickable_square.get_rect(topleft=(500, 330))
+        quit_button = clickable_square.get_rect(topleft=(800, 330))
         back_to_menu_surface = clickable_square.get_rect(topleft=(400, 780))
         back_to_menu_text = FONT.render(f"MENU", True, BLACK)
         score_surface = FONT.render(f"Score: {score}", True, BLACK)
         current_stage_surface = FONT.render(f"Stage: {stage_of_game}", True, BLACK)
+        again_text = FONT.render("AGAIN", True, BLACK)
+        quit_text = FONT.render("QUIT", True, BLACK)
+        congratz = FONT_BIGGER.render("CONGRATULATIONS!", True, BLACK)
         velocity = 0.2
         screen.blit(background, (0, 0))
         pygame.draw.rect(screen, BROWN, UI_rect)
@@ -253,6 +275,14 @@ while True:
                     sound_turned_on = True
                 elif back_to_menu_surface.collidepoint(event.pos):
                     stage_of_game = "starting menu"
+                elif again_button.collidepoint(event.pos):
+                    fill_zombies_stage3(zombies_stage3)
+                    score = 0
+                    stage_of_game = 1
+                    reset_zombies = True
+                    summon_final_boss = True
+                elif quit_button.collidepoint(event.pos):
+                    quit()
 
             if event.type == FIRE_BULLET_EVENT:
                 fire_bullet_to_catch.rect.x = 1600
@@ -284,15 +314,25 @@ while True:
                             zombie.rect.x = 1520
                             zombie.rect.y = random.choice(random_y_spawning_positions)
                             zombie.hit_points = 4
-                        else:
+                        elif zombie.name_image == zombie_boss:
                             score += 60
                             zombie.rect.x = 1580
                             zombie.rect.y = random.choice(random_y_spawning_positions[0:4])
                             zombie.hit_points = 12
-                        if score > 2000:
-                            stage_of_game = 2
-                        if score > 5000:
-                            stage_of_game = 3                       #TODO asi treba dokoncit
+                        elif zombie.name_image == final_boss:
+                            zombies_stage3.clear()
+
+        if score > 1000:
+            stage_of_game = 2
+        if score > 2000:
+            stage_of_game = 3
+        if score > 3000 and summon_final_boss:
+            reset_zombies_x_position(10000)
+            dragon = Zombie(final_boss)
+            get_zombie_list_based_on_stage().append(dragon)
+            velocity = 0.1
+            pygame.time.set_timer(ADD_ZOMBIE_EVENT, 300000)
+            summon_final_boss = False
 
         for zombie in get_zombie_list_based_on_stage():
             velocity += 0.2
@@ -310,6 +350,13 @@ while True:
                 fire_bullet_to_catch.visible = False
                 fire_ammunition = True
                 pygame.time.set_timer(RESET_FIRE_EVENT, 5000)
+
+        if len(zombies_stage3) == 0:
+            screen.blit(again_text, (530, 350))
+            screen.blit(quit_text, (845, 350))
+            screen.blit(congratz, (430, 200))
+            screen.blit(clickable_square, again_button)
+            screen.blit(clickable_square, quit_button)
 
         #######################################################         GAME BAR         ####################
         if sound_turned_on:
