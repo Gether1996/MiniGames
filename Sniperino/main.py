@@ -361,6 +361,9 @@ while True:
             if zombie.rect.colliderect(sniper_rect):
                 stage_of_game = "starting menu"
                 score = 0
+            if zombie.rect.x < -100:
+                stage_of_game = "starting menu"
+                score = 0
 
         if fire_bullet_to_catch.visible:
             screen.blit(fire_bullet, fire_bullet_to_catch.rect)
