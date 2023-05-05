@@ -26,6 +26,7 @@ legend = pygame.image.load('images/legend.png').convert_alpha()
 legend2 = pygame.image.load('images/legend2.png').convert_alpha()
 clickable_square = pygame.image.load('images/clickable_square.png').convert_alpha()
 info_1 = pygame.image.load('images/info_1.png').convert_alpha()
+info_2 = pygame.image.load('images/info_2.png').convert_alpha()
 
 # positions and rectangles
 sniper_position_y = 20
@@ -166,6 +167,7 @@ while True:
         screen.blit(created_by, (550, 850))
         if show_info_of_game:
             screen.blit(info_1, (80, 300))
+            screen.blit(info_2, (1000, 300))
 
         if starting_menu:
             for i in range(4):
@@ -339,11 +341,11 @@ while True:
                         elif zombie.name_image == final_boss:
                             zombies_stage3.clear()
 
-        if score > 1000:
+        if score > 999:
             stage_of_game = 2
-        if score > 2000:
+        if score > 2499:
             stage_of_game = 3
-        if score > 3000 and summon_final_boss:
+        if score > 3500 and summon_final_boss:
             reset_zombies_x_position(10000)
             dragon = Zombie(final_boss)
             get_zombie_list_based_on_stage().append(dragon)
