@@ -28,28 +28,37 @@ legend2 = pygame.image.load('images/legend2.png').convert_alpha()
 sniper_position_y = 20
 bullet_position_x = 160
 UI_rect = pygame.Rect(0, 700, 1500, 200)
+fire_bullet_to_catch_pos_x = 1600
 
 # colors
 BROWN = (205, 133, 63)
 
-random_y_position_for_zombie = [20, 160, 300, 440, 580]
+random_y_spawning_positions = [20, 160, 300, 440, 580]
 
 # new zombie1 added to game each 30 seconds
 ADD_ZOMBIE_EVENT = pygame.USEREVENT + 1
 pygame.time.set_timer(ADD_ZOMBIE_EVENT, 30000)
+
+# fire bullet every 20 seconds
+FIRE_BULLET_EVENT = pygame.USEREVENT + 2
+pygame.time.set_timer(FIRE_BULLET_EVENT, 20000)
+
+# 5 seconds of fire ammunition
+RESET_FIRE_EVENT = pygame.USEREVENT + 3
+pygame.time.set_timer(RESET_FIRE_EVENT, 5000)
 
 
 class Zombie:
     def __init__(self, name_image):
         self.name_image = name_image
         if self.name_image == zombie1:
-            self.rect = self.name_image.get_rect(topleft=(1600, random.choice(random_y_position_for_zombie)))
+            self.rect = self.name_image.get_rect(topleft=(1600, random.choice(random_y_spawning_positions)))
             self.hit_points = 2
         elif self.name_image == zombie2:
-            self.rect = self.name_image.get_rect(topleft=(1800, random.choice(random_y_position_for_zombie)))
+            self.rect = self.name_image.get_rect(topleft=(1800, random.choice(random_y_spawning_positions)))
             self.hit_points = 4
         else:
-            self.rect = self.name_image.get_rect(topleft=(2000, random.choice(random_y_position_for_zombie[0:4])))
+            self.rect = self.name_image.get_rect(topleft=(2000, random.choice(random_y_spawning_positions[0:4])))
             self.rect = self.rect.inflate(-30, -30)
             self.hit_points = 12
 
@@ -79,9 +88,11 @@ for x in range(2):
 zombie_boss1 = Zombie(zombie_boss)
 zombies.append(zombie_boss1)
 
-num_of_bullets = 0
 bullets = []
 sound_turned_on = True
+fire_ammunition = False
+fire_bullet_to_catch = Bullet(fire_bullet)
+fire_bullet_to_catch.visible = False
 
 while True:
     sniper_rect = sniper.get_rect(topleft=(30, sniper_position_y))
@@ -104,14 +115,13 @@ while True:
             if event.key == pygame.K_DOWN and sniper_position_y < 550:
                 sniper_position_y += 140
             if event.key == pygame.K_SPACE:
-                num_of_bullets += 1
-                if num_of_bullets % 10 == 0:
-                    new_bullet = Bullet(fire_bullet)
+                if fire_ammunition:
                     fire_shot_sound.play()
+                    new_bullet = Bullet(fire_bullet)
                     bullets.append(new_bullet)
                 else:
-                    bullet_sound.play()
                     new_bullet = Bullet(bullet)
+                    bullet_sound.play()
                     bullets.append(new_bullet)
 
         if event.type == ADD_ZOMBIE_EVENT:
@@ -124,6 +134,15 @@ while True:
                 sound_turned_on = False
             else:
                 sound_turned_on = True
+
+        if event.type == FIRE_BULLET_EVENT:
+            fire_bullet_to_catch.rect.x = 1600
+            fire_bullet_to_catch.rect.y = random.choice(random_y_spawning_positions) + 20
+            fire_bullet_to_catch.visible = True
+
+        if event.type == RESET_FIRE_EVENT:
+            fire_ammunition = False
+            pygame.time.set_timer(RESET_FIRE_EVENT, 0)
 
     #######################################################         BULLETS / ZOMBIES          ####################
     for bullet_in_list in bullets:
@@ -138,15 +157,15 @@ while True:
                     velocity += 0.1
                     if zombie.name_image == zombie1:
                         zombie.rect.x = 1600
-                        zombie.rect.y = random.choice(random_y_position_for_zombie)
+                        zombie.rect.y = random.choice(random_y_spawning_positions)
                         zombie.hit_points = 2
                     elif zombie.name_image == zombie2:
                         zombie.rect.x = 1800
-                        zombie.rect.y = random.choice(random_y_position_for_zombie)
+                        zombie.rect.y = random.choice(random_y_spawning_positions)
                         zombie.hit_points = 4
                     else:
                         zombie.rect.x = 2200
-                        zombie.rect.y = random.choice(random_y_position_for_zombie[0:4])
+                        zombie.rect.y = random.choice(random_y_spawning_positions[0:4])
                         zombie.hit_points = 12
 
     for zombie in zombies:
@@ -157,6 +176,15 @@ while True:
         if zombie.rect.colliderect(sniper_rect):
             quit()
 
+    if fire_bullet_to_catch.visible:
+        screen.blit(fire_bullet, fire_bullet_to_catch.rect)
+        fire_bullet_to_catch.rect.x -= 10
+        if fire_bullet_to_catch.rect.colliderect(sniper_rect):
+            fire_bullet_to_catch.visible = False
+            fire_ammunition = True
+            pygame.time.set_timer(RESET_FIRE_EVENT, 5000)
+
+    #######################################################         GAME BAR         ####################
     if sound_turned_on:
         screen.blit(sound_on, sound_rect)
         bullet_sound.set_volume(0.4)
