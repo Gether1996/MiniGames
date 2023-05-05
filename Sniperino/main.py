@@ -71,7 +71,7 @@ class Zombie:
             self.hit_points = 12
         else:
             self.rect = self.name_image.get_rect(topleft=(1500, 100))
-            self.hit_points = 35
+            self.hit_points = 36
 
 
 class Bullet:
@@ -166,7 +166,7 @@ while True:
         screen.blit(score_surface, (700, 130))
         screen.blit(created_by, (550, 850))
         if show_info_of_game:
-            screen.blit(info_1, (80, 300))
+            screen.blit(info_1, (40, 250))
             screen.blit(info_2, (1000, 300))
 
         if starting_menu:
