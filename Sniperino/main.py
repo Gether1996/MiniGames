@@ -25,6 +25,7 @@ sound_off = pygame.image.load('images/sound_off.png').convert_alpha()
 legend = pygame.image.load('images/legend.png').convert_alpha()
 legend2 = pygame.image.load('images/legend2.png').convert_alpha()
 clickable_square = pygame.image.load('images/clickable_square.png').convert_alpha()
+info_1 = pygame.image.load('images/info_1.png').convert_alpha()
 
 # positions and rectangles
 sniper_position_y = 20
@@ -122,6 +123,7 @@ stage_of_game = "starting menu"
 starting_menu = True
 reset_zombies = True
 summon_final_boss = True
+show_info_of_game = False
 
 
 def get_zombie_list_based_on_stage():
@@ -162,6 +164,8 @@ while True:
         screen.blit(sniperino_surface, (600, 50))
         screen.blit(score_surface, (700, 130))
         screen.blit(created_by, (550, 850))
+        if show_info_of_game:
+            screen.blit(info_1, (80, 300))
 
         if starting_menu:
             for i in range(4):
@@ -205,22 +209,26 @@ while True:
                     if boxes[0].collidepoint(event.pos):
                         stage_of_game = 1
                         reset_zombies = True
+                        show_info_of_game = False
                     elif boxes[1].collidepoint(event.pos):
                         starting_menu = False
                     elif boxes[2].collidepoint(event.pos):
-                        pass
+                        show_info_of_game = True
                     elif boxes[3].collidepoint(event.pos):
                         quit()
                 else:
                     if boxes[0].collidepoint(event.pos):
                         stage_of_game = 1
                         reset_zombies = True
+                        show_info_of_game = False
                     elif boxes[1].collidepoint(event.pos):
                         stage_of_game = 2
                         reset_zombies = True
+                        show_info_of_game = False
                     elif boxes[2].collidepoint(event.pos):
                         stage_of_game = 3
                         reset_zombies = True
+                        show_info_of_game = False
 
     while stage_of_game in [1, 2, 3]:
         if reset_zombies:
@@ -242,8 +250,8 @@ while True:
         pygame.draw.rect(screen, BROWN, UI_rect)
         screen.blit(clickable_square, back_to_menu_surface)
         screen.blit(back_to_menu_text, (448, 800))
-        screen.blit(legend, (1250, 705))
-        screen.blit(legend2, (900, 735))
+        screen.blit(legend, (1000, 735))
+        screen.blit(legend2, (650, 735))
         screen.blit(score_surface, (200, 700))
         screen.blit(current_stage_surface, (30, 700))
         screen.blit(sniper, (30, sniper_position_y))
