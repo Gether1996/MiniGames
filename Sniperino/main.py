@@ -180,13 +180,18 @@ while True:
             reset_zombies = False
             for i, zombie in enumerate(zombies_stage1):
                 zombie.rect.x = 1500 + i*50
+
         sniper_rect = sniper.get_rect(topleft=(30, sniper_position_y))
         sound_rect = sound_on.get_rect(topleft=(150, 780))
+        back_to_menu_surface = clickable_square.get_rect(topleft=(400, 780))
+        back_to_menu_text = FONT.render(f"MENU", True, BLACK)
         score_surface = FONT.render(f"Score: {score}", True, BLACK)
         current_stage_surface = FONT.render(f"Stage: {stage_of_game}", True, BLACK)
         velocity = 0.2
         screen.blit(background, (0, 0))
         pygame.draw.rect(screen, BROWN, UI_rect)
+        screen.blit(clickable_square, back_to_menu_surface)
+        screen.blit(back_to_menu_text, (448, 800))
         screen.blit(legend, (1250, 705))
         screen.blit(legend2, (900, 735))
         screen.blit(score_surface, (200, 700))
@@ -221,8 +226,10 @@ while True:
                 mouse_pos = pygame.mouse.get_pos()
                 if sound_rect.collidepoint(event.pos) and sound_turned_on:
                     sound_turned_on = False
-                else:
+                elif sound_rect.collidepoint(event.pos) and not sound_turned_on:
                     sound_turned_on = True
+                elif back_to_menu_surface.collidepoint(event.pos):
+                    stage_of_game = "starting menu"
 
             if event.type == FIRE_BULLET_EVENT:
                 fire_bullet_to_catch.rect.x = 1600
@@ -267,6 +274,7 @@ while True:
                 screen.blit(zombie.name_image, zombie.rect)
             if zombie.rect.colliderect(sniper_rect):
                 stage_of_game = "starting menu"
+                score = 0
 
         if fire_bullet_to_catch.visible:
             screen.blit(fire_bullet, fire_bullet_to_catch.rect)
