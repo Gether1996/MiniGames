@@ -153,6 +153,11 @@ while True:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE and starting_menu:
+                    quit()
+                else:
+                    starting_menu = True
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = pygame.mouse.get_pos()
                 if starting_menu:
@@ -217,6 +222,10 @@ while True:
                         new_bullet = Bullet(bullet)
                         bullet_sound.play()
                         bullets.append(new_bullet)
+                if event.key == pygame.K_ESCAPE:
+                    stage_of_game = "starting menu"
+                    reset_zombies = True
+                    starting_menu = True
 
             if event.type == ADD_ZOMBIE_EVENT:
                 zombie = Zombie(zombie1)
@@ -305,11 +314,15 @@ while True:
                 zombie.rect.x = 1500 + i*50
         sniper_rect = sniper.get_rect(topleft=(30, sniper_position_y))
         sound_rect = sound_on.get_rect(topleft=(150, 780))
+        back_to_menu_surface = clickable_square.get_rect(topleft=(400, 780))
+        back_to_menu_text = FONT.render(f"MENU", True, BLACK)
         score_surface = FONT.render(f"Score: {score}", True, BLACK)
         current_stage_surface = FONT.render(f"Stage: {stage_of_game}", True, BLACK)
         velocity = 0.3
         screen.blit(background, (0, 0))
         pygame.draw.rect(screen, BROWN, UI_rect)
+        screen.blit(clickable_square, back_to_menu_surface)
+        screen.blit(back_to_menu_text, (448, 800))
         screen.blit(legend, (1250, 705))
         screen.blit(legend2, (900, 735))
         screen.blit(score_surface, (200, 700))
@@ -335,6 +348,10 @@ while True:
                         new_bullet = Bullet(bullet)
                         bullet_sound.play()
                         bullets.append(new_bullet)
+                if event.key == pygame.K_ESCAPE:
+                    stage_of_game = "starting menu"
+                    reset_zombies = True
+                    starting_menu = True
 
             if event.type == ADD_ZOMBIE_EVENT:
                 zombie = Zombie(zombie2)
@@ -420,11 +437,15 @@ while True:
                 zombie.rect.x = 1500 + i*50
         sniper_rect = sniper.get_rect(topleft=(30, sniper_position_y))
         sound_rect = sound_on.get_rect(topleft=(150, 780))
+        back_to_menu_surface = clickable_square.get_rect(topleft=(400, 780))
+        back_to_menu_text = FONT.render(f"MENU", True, BLACK)
         score_surface = FONT.render(f"Score: {score}", True, BLACK)
         current_stage_surface = FONT.render(f"Stage: {stage_of_game}", True, BLACK)
         velocity = 0.1
         screen.blit(background, (0, 0))
         pygame.draw.rect(screen, BROWN, UI_rect)
+        screen.blit(clickable_square, back_to_menu_surface)
+        screen.blit(back_to_menu_text, (448, 800))
         screen.blit(legend, (1250, 705))
         screen.blit(legend2, (900, 735))
         screen.blit(score_surface, (200, 700))
@@ -450,6 +471,10 @@ while True:
                         new_bullet = Bullet(bullet)
                         bullet_sound.play()
                         bullets.append(new_bullet)
+                if event.key == pygame.K_ESCAPE:
+                    stage_of_game = "starting menu"
+                    reset_zombies = True
+                    starting_menu = True
 
             if event.type == ADD_ZOMBIE_EVENT:
                 zombie = Zombie(zombie2)
@@ -499,7 +524,7 @@ while True:
                             zombie.hit_points = 12
 
         for zombie in zombies_stage3:
-            velocity += 0.2
+            velocity += 0.1
             zombie.rect.x -= velocity
             if zombie.hit_points > 0:
                 screen.blit(zombie.name_image, zombie.rect)
