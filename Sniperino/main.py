@@ -85,9 +85,8 @@ zombies_stage1 = []      # 5x zombie1, 1x zombie2
 zombies_stage2 = []      # 5x zombie1, 4x zombie2, 1x zombie_boss
 zombies_stage3 = []      # 5x zombie1, 4x zombie2, 3x zombie_boss
 # zombies 1
-for i in range(5):
+for i in range(6):
     zombie = Zombie(zombie1)
-    zombie.rect.x += 100 * i
     zombies_stage1.append(zombie)
     zombies_stage2.append(zombie)
     zombies_stage3.append(zombie)
@@ -95,7 +94,6 @@ for i in range(5):
 # zombies 2
 for x in range(4):
     zombie = Zombie(zombie2)
-    zombie.rect.x += 150 * x
     zombies_stage2.append(zombie)
     zombies_stage3.append(zombie)
 zombie2_for_stage1 = Zombie(zombie2)
@@ -104,7 +102,6 @@ zombies_stage1.append(zombie2_for_stage1)
 # zombie bosses
 for j in range(3):
     zombie = Zombie(zombie_boss)
-    zombie.rect.x += 200 * j
     zombies_stage3.append(zombie)
 zombie_boss_stage2 = Zombie(zombie_boss)
 zombies_stage2.append(zombie_boss_stage2)
@@ -118,6 +115,7 @@ fire_bullet_to_catch.visible = False
 score = 0
 stage_of_game = "starting menu"
 starting_menu = True
+reset_zombies = True
 
 while True:
     while stage_of_game == "starting menu":
@@ -160,6 +158,7 @@ while True:
                 if starting_menu:
                     if boxes[0].collidepoint(event.pos):
                         stage_of_game = 1
+                        reset_zombies = True
                     elif boxes[1].collidepoint(event.pos):
                         starting_menu = False
                     elif boxes[2].collidepoint(event.pos):
@@ -167,12 +166,20 @@ while True:
                 else:
                     if boxes[0].collidepoint(event.pos):
                         stage_of_game = 1
+                        reset_zombies = True
                     elif boxes[1].collidepoint(event.pos):
                         stage_of_game = 2
+                        reset_zombies = True
                     elif boxes[2].collidepoint(event.pos):
                         stage_of_game = 3
+                        reset_zombies = True
 
     while stage_of_game == 1:
+        if reset_zombies:
+            velocity = 0.2
+            reset_zombies = False
+            for i, zombie in enumerate(zombies_stage1):
+                zombie.rect.x = 1500 + i*50
         sniper_rect = sniper.get_rect(topleft=(30, sniper_position_y))
         sound_rect = sound_on.get_rect(topleft=(150, 780))
         score_surface = FONT.render(f"Score: {score}", True, BLACK)
@@ -236,7 +243,7 @@ while True:
                     zombie.hit_points -= bullet_in_list.damage
                     bullet_in_list.visible = False
                     if zombie.hit_points <= 0:
-                        velocity += 0.2
+                        velocity += 0.3
                         if zombie.name_image == zombie1:
                             score += 10
                             zombie.rect.x = 1550
@@ -283,6 +290,11 @@ while True:
         clock.tick(60)
 
     while stage_of_game == 2:
+        if reset_zombies:
+            velocity = 0.2
+            reset_zombies = False
+            for i, zombie in enumerate(zombies_stage2):
+                zombie.rect.x = 1500 + i*50
         sniper_rect = sniper.get_rect(topleft=(30, sniper_position_y))
         sound_rect = sound_on.get_rect(topleft=(150, 780))
         score_surface = FONT.render(f"Score: {score}", True, BLACK)
@@ -393,6 +405,11 @@ while True:
         clock.tick(60)
 
     while stage_of_game == 3:
+        if reset_zombies:
+            reset_zombies = False
+            velocity = 0.2
+            for i, zombie in enumerate(zombies_stage3):
+                zombie.rect.x = 1500 + i*50
         sniper_rect = sniper.get_rect(topleft=(30, sniper_position_y))
         sound_rect = sound_on.get_rect(topleft=(150, 780))
         score_surface = FONT.render(f"Score: {score}", True, BLACK)
