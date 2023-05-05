@@ -110,6 +110,7 @@ for j in range(3):
 zombie_boss_stage2 = Zombie(zombie_boss)
 zombies_stage2.append(zombie_boss_stage2)
 
+# starting stats
 bullets = []
 boxes = []
 sound_turned_on = True
@@ -162,23 +163,29 @@ while True:
         screen.blit(score_surface, (700, 130))
         screen.blit(created_by, (550, 850))
 
-        for i in range(3):
-            again_button = clickable_square.get_rect(topleft=(665, 250 + i * 120))
-            screen.blit(clickable_square, again_button)
-            boxes.append(again_button)
         if starting_menu:
-            again_text = FONT.render("START", True, BLACK)
-            quit_text = FONT.render("STAGES", True, BLACK)
-            text3 = FONT.render("QUIT", True, BLACK)
-            screen.blit(again_text, (700, 270))
-            screen.blit(quit_text, (690, 390))
-            screen.blit(text3, (705, 510))
+            for i in range(4):
+                again_button = clickable_square.get_rect(topleft=(665, 250 + i * 120))
+                screen.blit(clickable_square, again_button)
+                boxes.append(again_button)
+            text1 = FONT.render("START", True, BLACK)
+            text2 = FONT.render("STAGES", True, BLACK)
+            text3 = FONT.render("INFO", True, BLACK)
+            text4 = FONT.render("QUIT", True, BLACK)
+            screen.blit(text1, (700, 270))
+            screen.blit(text2, (690, 390))
+            screen.blit(text3, (710, 510))
+            screen.blit(text4, (715, 630))
         else:
-            again_text = FONT.render("1", True, BLACK)
-            quit_text = FONT.render("2", True, BLACK)
+            for i in range(3):
+                again_button = clickable_square.get_rect(topleft=(665, 250 + i * 120))
+                screen.blit(clickable_square, again_button)
+                boxes.append(again_button)
+            text1 = FONT.render("1", True, BLACK)
+            text2 = FONT.render("2", True, BLACK)
             text3 = FONT.render("3", True, BLACK)
-            screen.blit(again_text, (756, 270))
-            screen.blit(quit_text, (750, 390))
+            screen.blit(text1, (756, 270))
+            screen.blit(text2, (750, 390))
             screen.blit(text3, (750, 510))
 
         pygame.display.update()
@@ -201,6 +208,8 @@ while True:
                     elif boxes[1].collidepoint(event.pos):
                         starting_menu = False
                     elif boxes[2].collidepoint(event.pos):
+                        pass
+                    elif boxes[3].collidepoint(event.pos):
                         quit()
                 else:
                     if boxes[0].collidepoint(event.pos):
