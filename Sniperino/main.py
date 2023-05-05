@@ -127,6 +127,13 @@ def get_zombie_list_based_on_stage():
         return zombies_stage3
 
 
+def reset_zombies_x_position():
+    velocity = 0.2
+    for i, zombie in enumerate(get_zombie_list_based_on_stage()):
+        zombie.rect.x = 1500 + i * 50
+    return velocity, reset_zombies
+
+
 while True:
     while stage_of_game == "starting menu":
         score_surface = FONT.render(f"Score: {score}", True, BLACK)
@@ -191,11 +198,8 @@ while True:
 
     while stage_of_game in [1, 2, 3]:
         if reset_zombies:
-            velocity = 0.2
             reset_zombies = False
-            for i, zombie in enumerate(get_zombie_list_based_on_stage()):
-                zombie.rect.x = 1500 + i*50
-
+            reset_zombies_x_position()
         sniper_rect = sniper.get_rect(topleft=(30, sniper_position_y))
         sound_rect = sound_on.get_rect(topleft=(150, 780))
         back_to_menu_surface = clickable_square.get_rect(topleft=(400, 780))
@@ -285,6 +289,10 @@ while True:
                             zombie.rect.x = 1580
                             zombie.rect.y = random.choice(random_y_spawning_positions[0:4])
                             zombie.hit_points = 12
+                        if score > 2000:
+                            stage_of_game = 2
+                        if score > 5000:
+                            stage_of_game = 3                       #TODO asi treba dokoncit
 
         for zombie in get_zombie_list_based_on_stage():
             velocity += 0.2
