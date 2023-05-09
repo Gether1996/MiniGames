@@ -247,14 +247,16 @@ while True:
         if reset_zombies:
             reset_zombies = False
             reset_zombies_and_viruses_x_position(1500)
+            shark_bullet_skill_ready = False
+            push_skill_ready = False
         sniper_rect = sniper.get_rect(topleft=(30, sniper_position_y))
         sound_rect = sound_on.get_rect(topleft=(360, 760))
         again_button = clickable_square.get_rect(topleft=(500, 330))
         quit_button = clickable_square.get_rect(topleft=(800, 330))
         back_to_menu_surface = clickable_square.get_rect(topleft=(100, 750))
-        shark_bullet_skill_surface = shark_bullet_bigger.get_rect(topleft=(580, 750))
-        push_surface = push.get_rect(topleft=(800, 750))
-        back_to_menu_text = FONT.render(f"MENU", True, BLACK)
+        back_to_menu_text = FONT.render("MENU", True, BLACK)
+        shark_key = FONT.render("Y", True, BLACK)
+        push_key = FONT.render("X", True, BLACK)
         score_surface = FONT.render(f"Score: {score}", True, BLACK)
         current_stage_surface = FONT_BIGGER.render(f"Stage: {stage_of_game}", True, BLACK)
         again_text = FONT.render("AGAIN", True, BLACK)
@@ -291,6 +293,16 @@ while True:
                 if event.key == pygame.K_ESCAPE:
                     stage_of_game = "starting menu"
                     reset_zombies = True
+                if event.key == pygame.K_y and shark_bullet_skill_ready:
+                    shark_bullet_skill_ready = False
+                    for i in range(1, 6):
+                        new_shark_bullet = Bullet(shark_bullet)
+                        new_shark_bullet.rect.y = 60 + 140*(i-1)
+                        bullets.append(new_shark_bullet)
+                if event.key == pygame.K_x and push_skill_ready:
+                    push_skill_ready = False
+                    for zombie in get_zombie_list_based_on_stage():
+                        zombie.rect.x += 400
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = pygame.mouse.get_pos()
@@ -306,18 +318,9 @@ while True:
                     stage_of_game = 1
                     reset_zombies = True
                     summon_final_boss = True
+
                 elif quit_button.collidepoint(event.pos):
                     quit()
-                elif shark_bullet_skill_surface.collidepoint(event.pos) and shark_bullet_skill_ready:
-                    shark_bullet_skill_ready = False
-                    for i in range(1, 6):
-                        new_shark_bullet = Bullet(shark_bullet)
-                        new_shark_bullet.rect.y = 60 + 140*(i-1)
-                        bullets.append(new_shark_bullet)
-                elif push_surface.collidepoint(event.pos) and push_skill_ready:
-                    push_skill_ready = False
-                    for zombie in get_zombie_list_based_on_stage():
-                        zombie.rect.x += 400
 
             if event.type == ADD_ZOMBIE_EVENT:
                 zombie = Zombie(zombie1)
@@ -431,10 +434,12 @@ while True:
             pygame.mixer_music.set_volume(0)
 
         if shark_bullet_skill_ready:
-            screen.blit(shark_bullet_bigger, shark_bullet_skill_surface)
+            screen.blit(shark_bullet_bigger, (580, 780))
+            screen.blit(shark_key, (650, 700))
 
         if push_skill_ready:
-            screen.blit(push, push_surface)
+            screen.blit(push, (800, 780))
+            screen.blit(push_key, (850, 700))
 
         pygame.display.update()
         clock.tick(60)
