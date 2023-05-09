@@ -149,6 +149,7 @@ fire_ammunition = False
 fire_bullet_to_catch = Bullet(fire_bullet)
 fire_bullet_to_catch.visible = False
 score = 0
+
 stage_of_game = "starting menu"
 reset_zombies = True
 summon_final_boss = True
@@ -156,6 +157,18 @@ show_info_of_game = False
 shark_bullet_skill_ready = False
 push_skill_ready = False
 infinite_game = False
+
+
+def get_best_score():
+    with open("record.txt", "r") as f:
+        best_score = int(f.read())
+        return best_score
+
+
+def update_best_score(points):
+    if points > get_best_score():
+        with open("record.txt", "w") as f:
+            f.write(str(points))
 
 
 def get_zombie_list_based_on_stage():
@@ -204,13 +217,14 @@ def fill_zombies(zombie_list):
 pygame.mixer.music.play()
 while True:
     while stage_of_game == "starting menu":
-        score_surface = FONT.render(f"Score: {score}", True, BLACK)
         sniperino_surface = FONT_BIGGER.render("SNIPERINO", True, BLACK)
         created_by = FONT.render("Created by Patrik Kredátus", True, BLACK)
+        record = get_best_score()
+        record_surface = FONT.render(f"Best score: {record}", True, BLACK)
 
         screen.blit(background, (0, 0))
         screen.blit(sniperino_surface, (600, 50))
-        screen.blit(score_surface, (700, 130))
+        screen.blit(record_surface, (650, 130))
         screen.blit(created_by, (550, 850))
         if show_info_of_game:
             screen.blit(info_1, (40, 180))
@@ -383,9 +397,11 @@ while True:
                 screen.blit(zombie.name_image, zombie.rect)
             if zombie.rect.colliderect(sniper_rect):
                 stage_of_game = "starting menu"
+                update_best_score(score)
                 score = 0
             if zombie.rect.x < -100:
                 stage_of_game = "starting menu"
+                update_best_score(score)
                 score = 0
 
         for virus in get_viruses_based_on_stage():
@@ -397,6 +413,7 @@ while True:
 
             if virus.rect.colliderect(sniper_rect):
                 stage_of_game = "starting menu"
+                update_best_score(score)
                 score = 0
                 reset_zombies = True
 
