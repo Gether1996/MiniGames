@@ -149,7 +149,7 @@ fire_ammunition = False
 fire_bullet_to_catch = Bullet(fire_bullet)
 fire_bullet_to_catch.visible = False
 score = 0
-
+player_name = ""
 stage_of_game = "starting menu"
 reset_zombies = True
 summon_final_boss = True
@@ -157,18 +157,31 @@ show_info_of_game = False
 shark_bullet_skill_ready = False
 push_skill_ready = False
 infinite_game = False
+input_box_active = False
+got_player_name = False
 
 
+# functions
 def get_best_score():
     with open("record.txt", "r") as f:
-        best_score = int(f.read())
-        return best_score
+        lines = f.readlines()
+        if len(lines) == 1:
+            best_score = int(lines[0].strip())
+            best_name = ""
+        else:
+            best_score = int(lines[0].strip())
+            best_name = lines[1].strip()
+        return best_score, best_name
 
 
-def update_best_score(points):
-    if points > get_best_score():
+def update_best_score(points, name):
+    best_score, best_name = get_best_score()
+    if points > best_score and len(name) > 0:
         with open("record.txt", "w") as f:
-            f.write(str(points))
+            f.write(str(points) + "\n" + name)
+    else:
+        with open("record.txt", "w") as f:
+            f.write(str(points) + "\n" + "Unknown")
 
 
 def get_zombie_list_based_on_stage():
@@ -217,14 +230,22 @@ def fill_zombies(zombie_list):
 pygame.mixer.music.play()
 while True:
     while stage_of_game == "starting menu":
+        player_name_rect = pygame.Rect(150, 50, 350, 100)
+        player_name_rect_color = (0, 255, 127)
+        player_name_rect_hover_color = (60, 179, 113)
+        input_box_rect = pygame.Rect(130, 40, 370, 120)
+        enter_name = FONT_BIGGER.render("Enter name", True, BLACK)
+        got_name = FONT_BIGGER.render(f"{player_name}", True, BLACK)
         sniperino_surface = FONT_BIGGER.render("SNIPERINO", True, BLACK)
         created_by = FONT.render("Created by Patrik Kredátus", True, BLACK)
-        record = get_best_score()
-        record_surface = FONT.render(f"Best score: {record}", True, BLACK)
+        record, player = get_best_score()
+        if len(player) == 0:
+            player = "Unknown"
+        record_surface = FONT.render(f"Best score: {record} by: {player}", True, BLACK)
 
         screen.blit(background, (0, 0))
         screen.blit(sniperino_surface, (600, 50))
-        screen.blit(record_surface, (650, 130))
+        screen.blit(record_surface, (550, 130))
         screen.blit(created_by, (550, 850))
         if show_info_of_game:
             screen.blit(info_1, (40, 180))
@@ -241,6 +262,17 @@ while True:
         screen.blit(text2, (715, 390))
         screen.blit(text3, (710, 510))
 
+        if player_name_rect.collidepoint(pygame.mouse.get_pos()):
+            pygame.draw.rect(screen, player_name_rect_hover_color, player_name_rect)
+        else:
+            pygame.draw.rect(screen, player_name_rect_color, player_name_rect)
+        if input_box_active:
+            pygame.draw.rect(screen, WHITE, input_box_rect)
+
+        if len(player_name) > 0:
+            screen.blit(got_name, (165, 60))
+        else:
+            screen.blit(enter_name, (165, 60))
         pygame.display.update()
 
         for event in pygame.event.get():
@@ -250,16 +282,30 @@ while True:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     quit()
+                if input_box_active:
+                    if event.key == pygame.K_RETURN and len(player_name) > 0:
+                        input_box_active = False
+                        got_player_name = True
+                    elif event.key == pygame.K_BACKSPACE:
+                        player_name = player_name[:-1]
+                    else:
+                        player_name += event.unicode
+
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = pygame.mouse.get_pos()
+                if player_name_rect.collidepoint(event.pos):
+                    input_box_active = True
                 if boxes[0].collidepoint(event.pos):
                     stage_of_game = 1
                     reset_zombies = True
                     show_info_of_game = False
+                    pygame.time.set_timer(ADD_ZOMBIE_EVENT, 30000)
                 elif boxes[1].collidepoint(event.pos):
                     show_info_of_game = True
                 elif boxes[2].collidepoint(event.pos):
                     quit()
+                if player_name_rect.collidepoint(event.pos):
+                    input_box_active = True
 
     while stage_of_game in [1, 2, 3, 4]:
         if reset_zombies:
@@ -397,11 +443,11 @@ while True:
                 screen.blit(zombie.name_image, zombie.rect)
             if zombie.rect.colliderect(sniper_rect):
                 stage_of_game = "starting menu"
-                update_best_score(score)
+                update_best_score(score, player_name)
                 score = 0
             if zombie.rect.x < -100:
                 stage_of_game = "starting menu"
-                update_best_score(score)
+                update_best_score(score, player_name)
                 score = 0
 
         for virus in get_viruses_based_on_stage():
@@ -413,7 +459,7 @@ while True:
 
             if virus.rect.colliderect(sniper_rect):
                 stage_of_game = "starting menu"
-                update_best_score(score)
+                update_best_score(score, player_name)
                 score = 0
                 reset_zombies = True
 
