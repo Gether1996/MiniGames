@@ -32,7 +32,7 @@ virus = pygame.image.load('images/virus.png').convert_alpha()
 
 random_y_spawning_positions = [20, 160, 300, 440, 580]
 
-# positions and rectangles
+# positions and game bar
 sniper_position_y = 20
 bullet_position_x = 160
 virus_position_x = 2500
@@ -70,7 +70,7 @@ class Bullet:
             self.damage = 4
             self.rect = self.name_image.get_rect(center=(bullet_position_x, sniper_position_y + 40))
         elif self.name_image == shark_bullet:
-            self.damage = 8
+            self.damage = 12
             self.rect = self.name_image.get_rect(center=(bullet_position_x, sniper_position_y + 40))
 
 
@@ -144,7 +144,6 @@ fire_bullet_to_catch = Bullet(fire_bullet)
 fire_bullet_to_catch.visible = False
 score = 0
 stage_of_game = "starting menu"
-starting_menu = True
 reset_zombies = True
 summon_final_boss = True
 show_info_of_game = False
@@ -204,8 +203,8 @@ while True:
         screen.blit(score_surface, (700, 130))
         screen.blit(created_by, (550, 850))
         if show_info_of_game:
-            screen.blit(info_1, (40, 250))
-            screen.blit(info_2, (1000, 300))
+            screen.blit(info_1, (40, 180))
+            screen.blit(info_2, (880, 250))
 
         for i in range(3):
             again_button = clickable_square.get_rect(topleft=(665, 250 + i * 120))
