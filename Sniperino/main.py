@@ -155,6 +155,7 @@ summon_final_boss = True
 show_info_of_game = False
 shark_bullet_skill_ready = False
 push_skill_ready = False
+infinite_game = False
 
 
 def get_zombie_list_based_on_stage():
@@ -181,10 +182,10 @@ def reset_zombies_and_viruses_x_position(x_position):
     velocity = 0.2
     pygame.time.set_timer(ADD_ZOMBIE_EVENT, 30000)
     for i, zombie in enumerate(get_zombie_list_based_on_stage()):
-        zombie.rect.x = x_position + i * 50
+        zombie.rect.x = x_position + i * 150
     for i, virus in enumerate(viruses):
         virus.rect.x = x_position + (i + 1) * 1500
-        virus.rect.y = random.choice(random_y_spawning_positions) - 20
+        virus.rect.y = random.choice(random_y_spawning_positions)
     return velocity
 
 
@@ -357,8 +358,8 @@ while True:
                             zombie.rect.y = random.choice(random_y_spawning_positions[0:4])
                             zombie.hit_points = 12
                         elif zombie.name_image == final_boss:
+                            infinite_game = True
                             fill_zombies(zombies_stage4)
-                            stage_of_game = 4
                             reset_zombies_and_viruses_x_position(1500)
 
         if score > 1000:
@@ -372,7 +373,7 @@ while True:
             velocity = 0.1
             pygame.time.set_timer(ADD_ZOMBIE_EVENT, 300000)
             summon_final_boss = False
-        elif score > 4000 and not summon_final_boss:
+        if score > 4000 and infinite_game:
             stage_of_game = 4
 
         for zombie in get_zombie_list_based_on_stage():
