@@ -8,9 +8,9 @@ pygame.display.set_caption("Sniperino")
 clock = pygame.time.Clock()
 
 # sounds
-bullet_sound = pygame.mixer.Sound('shot_sound.mp3')
-fire_shot_sound = pygame.mixer.Sound('fire_shot_sound.mp3')
-pygame.mixer.music.load('music.mp3')
+bullet_sound = pygame.mixer.Sound('sounds/shot_sound.mp3')
+fire_shot_sound = pygame.mixer.Sound('sounds/fire_shot_sound.mp3')
+pygame.mixer.music.load('sounds/music.mp3')
 
 # images
 background = pygame.image.load('images/background.jpg')
@@ -22,10 +22,9 @@ final_boss = pygame.image.load('images/final_boss.png').convert_alpha()
 bullet = pygame.image.load('images/power_bullet.png').convert_alpha()
 fire_bullet = pygame.image.load('images/flame_shot.png').convert_alpha()
 shark_bullet = pygame.image.load('images/shark_bullet.png').convert_alpha()
+shark_bullet_bigger = pygame.image.load('images/shark_bigger.png').convert_alpha()
 sound_on = pygame.image.load('images/sound_on.png').convert_alpha()
 sound_off = pygame.image.load('images/sound_off.png').convert_alpha()
-legend = pygame.image.load('images/legend.png').convert_alpha()
-legend2 = pygame.image.load('images/legend2.png').convert_alpha()
 clickable_square = pygame.image.load('images/clickable_square.png').convert_alpha()
 info_1 = pygame.image.load('images/info_1.png').convert_alpha()
 info_2 = pygame.image.load('images/info_2.png').convert_alpha()
@@ -40,30 +39,6 @@ virus_position_x = 2500
 virus_position_y = random.choice(random_y_spawning_positions)
 UI_rect = pygame.Rect(0, 700, 1500, 200)
 fire_bullet_to_catch_pos_x = 1600
-
-# colors & fonts
-BROWN = (205, 133, 63)
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
-FONT = pygame.font.SysFont("Comic Sans MS", 36)
-FONT_BIGGER = pygame.font.SysFont("Comic Sans MS", 60)
-
-# new events
-# new zombie1 added to game each 30 seconds
-ADD_ZOMBIE_EVENT = pygame.USEREVENT + 1
-pygame.time.set_timer(ADD_ZOMBIE_EVENT, 30000)
-
-# fire bullet every 20 seconds
-FIRE_BULLET_EVENT = pygame.USEREVENT + 2
-pygame.time.set_timer(FIRE_BULLET_EVENT, 20000)
-
-# 5 seconds of fire ammunition
-RESET_FIRE_EVENT = pygame.USEREVENT + 3
-pygame.time.set_timer(RESET_FIRE_EVENT, 5000)
-
-# shark_bullet_skill usable each 30sec
-SHARK_SKILL_READY = pygame.USEREVENT + 4
-pygame.time.set_timer(SHARK_SKILL_READY, 30000)
 
 
 class Zombie:
@@ -104,6 +79,30 @@ class Virus:
         self.image = image
         self.rect = self.image.get_rect(topleft=(virus_position_x, virus_position_y))
 
+
+# colors & fonts
+BROWN = (205, 133, 63)
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+FONT = pygame.font.SysFont("Comic Sans MS", 36)
+FONT_BIGGER = pygame.font.SysFont("Comic Sans MS", 60)
+
+# new events
+# new zombie1 added to game each 30 seconds
+ADD_ZOMBIE_EVENT = pygame.USEREVENT + 1
+pygame.time.set_timer(ADD_ZOMBIE_EVENT, 30000)
+
+# fire bullet every 20 seconds
+FIRE_BULLET_EVENT = pygame.USEREVENT + 2
+pygame.time.set_timer(FIRE_BULLET_EVENT, 20000)
+
+# 5 seconds of fire ammunition
+RESET_FIRE_EVENT = pygame.USEREVENT + 3
+pygame.time.set_timer(RESET_FIRE_EVENT, 5000)
+
+# shark_bullet_skill usable each 30sec
+SHARK_SKILL_READY = pygame.USEREVENT + 4
+pygame.time.set_timer(SHARK_SKILL_READY, 30000)
 
 # creating starting zombies and viruses
 zombies_stage1 = []      # 5x zombie1, 1x zombie2
@@ -244,14 +243,14 @@ while True:
             reset_zombies = False
             reset_zombies_and_viruses_x_position(1500)
         sniper_rect = sniper.get_rect(topleft=(30, sniper_position_y))
-        sound_rect = sound_on.get_rect(topleft=(150, 780))
+        sound_rect = sound_on.get_rect(topleft=(360, 760))
         again_button = clickable_square.get_rect(topleft=(500, 330))
         quit_button = clickable_square.get_rect(topleft=(800, 330))
-        back_to_menu_surface = clickable_square.get_rect(topleft=(400, 780))
-        shark_bullet_skill_surface = shark_bullet.get_rect(topleft=(480, 710))
+        back_to_menu_surface = clickable_square.get_rect(topleft=(100, 750))
+        shark_bullet_skill_surface = shark_bullet_bigger.get_rect(topleft=(580, 750))
         back_to_menu_text = FONT.render(f"MENU", True, BLACK)
         score_surface = FONT.render(f"Score: {score}", True, BLACK)
-        current_stage_surface = FONT.render(f"Stage: {stage_of_game}", True, BLACK)
+        current_stage_surface = FONT_BIGGER.render(f"Stage: {stage_of_game}", True, BLACK)
         again_text = FONT.render("AGAIN", True, BLACK)
         quit_text = FONT.render("QUIT", True, BLACK)
         congratz = FONT_BIGGER.render("CONGRATULATIONS!", True, BLACK)
@@ -259,11 +258,9 @@ while True:
         screen.blit(background, (0, 0))
         pygame.draw.rect(screen, BROWN, UI_rect)
         screen.blit(clickable_square, back_to_menu_surface)
-        screen.blit(back_to_menu_text, (448, 800))
-        screen.blit(legend, (1000, 735))
-        screen.blit(legend2, (650, 735))
-        screen.blit(score_surface, (200, 700))
-        screen.blit(current_stage_surface, (30, 700))
+        screen.blit(back_to_menu_text, (145, 770))
+        screen.blit(score_surface, (1250, 730))
+        screen.blit(current_stage_surface, (1220, 790))
         screen.blit(sniper, (30, sniper_position_y))
 
         #######################################################                EVENTS          ####################
@@ -421,7 +418,7 @@ while True:
             pygame.mixer_music.set_volume(0)
 
         if shark_bullet_skill_ready:
-            screen.blit(shark_bullet, shark_bullet_skill_surface)
+            screen.blit(shark_bullet_bigger, shark_bullet_skill_surface)
 
         pygame.display.update()
         clock.tick(60)
