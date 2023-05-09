@@ -29,6 +29,7 @@ clickable_square = pygame.image.load('images/clickable_square.png').convert_alph
 info_1 = pygame.image.load('images/info_1.png').convert_alpha()
 info_2 = pygame.image.load('images/info_2.png').convert_alpha()
 virus = pygame.image.load('images/virus.png').convert_alpha()
+push = pygame.image.load('images/push.png').convert_alpha()
 
 random_y_spawning_positions = [20, 160, 300, 440, 580]
 
@@ -104,6 +105,10 @@ pygame.time.set_timer(RESET_FIRE_EVENT, 5000)
 SHARK_SKILL_READY = pygame.USEREVENT + 4
 pygame.time.set_timer(SHARK_SKILL_READY, 30000)
 
+# push_skill usable each 45sec
+PUSH_SKILL_READY_45 = pygame.USEREVENT + 5
+pygame.time.set_timer(PUSH_SKILL_READY_45, 45000)
+
 # creating starting zombies and viruses
 zombies_stage1 = []      # 5x zombie1, 1x zombie2
 zombies_stage2 = []      # 5x zombie1, 4x zombie2, 1x zombie_boss
@@ -148,6 +153,7 @@ reset_zombies = True
 summon_final_boss = True
 show_info_of_game = False
 shark_bullet_skill_ready = False
+push_skill_ready = False
 
 
 def get_zombie_list_based_on_stage():
@@ -247,6 +253,7 @@ while True:
         quit_button = clickable_square.get_rect(topleft=(800, 330))
         back_to_menu_surface = clickable_square.get_rect(topleft=(100, 750))
         shark_bullet_skill_surface = shark_bullet_bigger.get_rect(topleft=(580, 750))
+        push_surface = push.get_rect(topleft=(800, 750))
         back_to_menu_text = FONT.render(f"MENU", True, BLACK)
         score_surface = FONT.render(f"Score: {score}", True, BLACK)
         current_stage_surface = FONT_BIGGER.render(f"Stage: {stage_of_game}", True, BLACK)
@@ -301,12 +308,16 @@ while True:
                     summon_final_boss = True
                 elif quit_button.collidepoint(event.pos):
                     quit()
-                elif shark_bullet_skill_surface.collidepoint(event.pos):
+                elif shark_bullet_skill_surface.collidepoint(event.pos) and shark_bullet_skill_ready:
                     shark_bullet_skill_ready = False
                     for i in range(1, 6):
                         new_shark_bullet = Bullet(shark_bullet)
                         new_shark_bullet.rect.y = 60 + 140*(i-1)
                         bullets.append(new_shark_bullet)
+                elif push_surface.collidepoint(event.pos) and push_skill_ready:
+                    push_skill_ready = False
+                    for zombie in get_zombie_list_based_on_stage():
+                        zombie.rect.x += 400
 
             if event.type == ADD_ZOMBIE_EVENT:
                 zombie = Zombie(zombie1)
@@ -314,6 +325,9 @@ while True:
 
             if event.type == SHARK_SKILL_READY:
                 shark_bullet_skill_ready = True
+
+            if event.type == PUSH_SKILL_READY_45:
+                push_skill_ready = True
 
             if event.type == FIRE_BULLET_EVENT:
                 fire_bullet_to_catch.rect.x = 1600
@@ -418,6 +432,9 @@ while True:
 
         if shark_bullet_skill_ready:
             screen.blit(shark_bullet_bigger, shark_bullet_skill_surface)
+
+        if push_skill_ready:
+            screen.blit(push, push_surface)
 
         pygame.display.update()
         clock.tick(60)
