@@ -28,11 +28,15 @@ legend2 = pygame.image.load('images/legend2.png').convert_alpha()
 clickable_square = pygame.image.load('images/clickable_square.png').convert_alpha()
 info_1 = pygame.image.load('images/info_1.png').convert_alpha()
 info_2 = pygame.image.load('images/info_2.png').convert_alpha()
+virus = pygame.image.load('images/virus.png').convert_alpha()
 
+random_y_spawning_positions = [20, 160, 300, 440, 580]
 
 # positions and rectangles
 sniper_position_y = 20
 bullet_position_x = 160
+virus_position_x = 2500
+virus_position_y = random.choice(random_y_spawning_positions)
 UI_rect = pygame.Rect(0, 700, 1500, 200)
 fire_bullet_to_catch_pos_x = 1600
 
@@ -42,8 +46,6 @@ BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 FONT = pygame.font.SysFont("Comic Sans MS", 36)
 FONT_BIGGER = pygame.font.SysFont("Comic Sans MS", 60)
-
-random_y_spawning_positions = [20, 160, 300, 440, 580]
 
 # new zombie1 added to game each 30 seconds
 ADD_ZOMBIE_EVENT = pygame.USEREVENT + 1
@@ -95,10 +97,17 @@ class Bullet:
             self.rect = self.name_image.get_rect(center=(bullet_position_x, sniper_position_y + 40))
 
 
-# creating starting zombies
+class Virus:
+    def __init__(self, image):
+        self.image = image
+        self.rect = self.image.get_rect(topleft=(virus_position_x, virus_position_y))
+
+
+# creating starting zombies and viruses
 zombies_stage1 = []      # 5x zombie1, 1x zombie2
 zombies_stage2 = []      # 5x zombie1, 4x zombie2, 1x zombie_boss
 zombies_stage3 = []      # 5x zombie1, 4x zombie2, 3x zombie_boss
+viruses = []             # 1 + 1 more for each stage
 # zombies 1
 for i in range(6):
     zombie = Zombie(zombie1)
@@ -120,6 +129,10 @@ for j in range(3):
     zombies_stage3.append(zombie)
 zombie_boss_stage2 = Zombie(zombie_boss)
 zombies_stage2.append(zombie_boss_stage2)
+
+for t in range(3):
+    new_virus = Virus(virus)
+    viruses.append(new_virus)
 
 # starting stats
 bullets = []
@@ -146,10 +159,23 @@ def get_zombie_list_based_on_stage():
         return zombies_stage3
 
 
-def reset_zombies_x_position(x_position):
+def get_viruses_based_on_stage():
+    if stage_of_game == 1:
+        return viruses[0:1]
+    elif stage_of_game == 2:
+        return viruses[0:2]
+    else:
+        return viruses[0:3]
+
+
+def reset_zombies_and_viruses_x_position(x_position):
     velocity = 0.2
+    pygame.time.set_timer(ADD_ZOMBIE_EVENT, 30000)
     for i, zombie in enumerate(get_zombie_list_based_on_stage()):
         zombie.rect.x = x_position + i * 50
+    for i, virus in enumerate(viruses):
+        virus.rect.x = x_position + (i + 1) * 1500
+        virus.rect.y = random.choice(random_y_spawning_positions) - 20
     return velocity
 
 
@@ -179,30 +205,16 @@ while True:
             screen.blit(info_1, (40, 250))
             screen.blit(info_2, (1000, 300))
 
-        if starting_menu:
-            for i in range(4):
-                again_button = clickable_square.get_rect(topleft=(665, 250 + i * 120))
-                screen.blit(clickable_square, again_button)
-                boxes.append(again_button)
-            text1 = FONT.render("START", True, BLACK)
-            text2 = FONT.render("STAGES", True, BLACK)
-            text3 = FONT.render("INFO", True, BLACK)
-            text4 = FONT.render("QUIT", True, BLACK)
-            screen.blit(text1, (700, 270))
-            screen.blit(text2, (690, 390))
-            screen.blit(text3, (710, 510))
-            screen.blit(text4, (715, 630))
-        else:
-            for i in range(3):
-                again_button = clickable_square.get_rect(topleft=(665, 250 + i * 120))
-                screen.blit(clickable_square, again_button)
-                boxes.append(again_button)
-            text1 = FONT.render("1", True, BLACK)
-            text2 = FONT.render("2", True, BLACK)
-            text3 = FONT.render("3", True, BLACK)
-            screen.blit(text1, (756, 270))
-            screen.blit(text2, (750, 390))
-            screen.blit(text3, (750, 510))
+        for i in range(3):
+            again_button = clickable_square.get_rect(topleft=(665, 250 + i * 120))
+            screen.blit(clickable_square, again_button)
+            boxes.append(again_button)
+        text1 = FONT.render("START", True, BLACK)
+        text2 = FONT.render("INFO", True, BLACK)
+        text3 = FONT.render("QUIT", True, BLACK)
+        screen.blit(text1, (700, 270))
+        screen.blit(text2, (715, 390))
+        screen.blit(text3, (710, 510))
 
         pygame.display.update()
 
@@ -211,47 +223,29 @@ while True:
                 pygame.quit()
                 exit()
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE and starting_menu:
+                if event.key == pygame.K_ESCAPE:
                     quit()
-                else:
-                    starting_menu = True
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = pygame.mouse.get_pos()
-                if starting_menu:
-                    if boxes[0].collidepoint(event.pos):
-                        stage_of_game = 1
-                        reset_zombies = True
-                        show_info_of_game = False
-                    elif boxes[1].collidepoint(event.pos):
-                        starting_menu = False
-                    elif boxes[2].collidepoint(event.pos):
-                        show_info_of_game = True
-                    elif boxes[3].collidepoint(event.pos):
-                        quit()
-                else:
-                    if boxes[0].collidepoint(event.pos):
-                        stage_of_game = 1
-                        reset_zombies = True
-                        show_info_of_game = False
-                    elif boxes[1].collidepoint(event.pos):
-                        stage_of_game = 2
-                        reset_zombies = True
-                        show_info_of_game = False
-                    elif boxes[2].collidepoint(event.pos):
-                        stage_of_game = 3
-                        reset_zombies = True
-                        show_info_of_game = False
+                if boxes[0].collidepoint(event.pos):
+                    stage_of_game = 1
+                    reset_zombies = True
+                    show_info_of_game = False
+                elif boxes[1].collidepoint(event.pos):
+                    show_info_of_game = True
+                elif boxes[2].collidepoint(event.pos):
+                    quit()
 
     while stage_of_game in [1, 2, 3]:
         if reset_zombies:
             reset_zombies = False
-            reset_zombies_x_position(1500)
+            reset_zombies_and_viruses_x_position(1500)
         sniper_rect = sniper.get_rect(topleft=(30, sniper_position_y))
         sound_rect = sound_on.get_rect(topleft=(150, 780))
         again_button = clickable_square.get_rect(topleft=(500, 330))
         quit_button = clickable_square.get_rect(topleft=(800, 330))
         back_to_menu_surface = clickable_square.get_rect(topleft=(400, 780))
-        shark_bullet_skill_surface = shark_bullet.get_rect(topleft=(400, 710))
+        shark_bullet_skill_surface = shark_bullet.get_rect(topleft=(450, 710))
         back_to_menu_text = FONT.render(f"MENU", True, BLACK)
         score_surface = FONT.render(f"Score: {score}", True, BLACK)
         current_stage_surface = FONT.render(f"Stage: {stage_of_game}", True, BLACK)
@@ -265,8 +259,6 @@ while True:
         screen.blit(back_to_menu_text, (448, 800))
         screen.blit(legend, (1000, 735))
         screen.blit(legend2, (650, 735))
-        if shark_bullet_skill_ready:
-            screen.blit(shark_bullet, shark_bullet_skill_surface)
         screen.blit(score_surface, (200, 700))
         screen.blit(current_stage_surface, (30, 700))
         screen.blit(sniper, (30, sniper_position_y))
@@ -293,7 +285,6 @@ while True:
                 if event.key == pygame.K_ESCAPE:
                     stage_of_game = "starting menu"
                     reset_zombies = True
-                    starting_menu = True
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = pygame.mouse.get_pos()
@@ -334,7 +325,7 @@ while True:
                 fire_ammunition = False
                 pygame.time.set_timer(RESET_FIRE_EVENT, 0)
 
-        #######################################################         BULLETS / ZOMBIES          ####################
+        #######################################################    BULLETS / ZOMBIES / VIRUSES     ####################
         for bullet_in_list in bullets:
             bullet_in_list.rect.x += 15
             if bullet_in_list.visible:
@@ -363,12 +354,12 @@ while True:
                         elif zombie.name_image == final_boss:
                             zombies_stage3.clear()
 
-        if score > 200:
+        if score > 1000:
             stage_of_game = 2
-        if score > 400:
+        if score > 2500:
             stage_of_game = 3
-        if score > 550 and summon_final_boss:
-            reset_zombies_x_position(10000)
+        if score > 3500 and summon_final_boss:
+            reset_zombies_and_viruses_x_position(10000)
             dragon = Zombie(final_boss)
             get_zombie_list_based_on_stage().append(dragon)
             velocity = 0.1
@@ -386,6 +377,18 @@ while True:
             if zombie.rect.x < -100:
                 stage_of_game = "starting menu"
                 score = 0
+
+        for virus in get_viruses_based_on_stage():
+            screen.blit(virus.image, virus.rect)
+            virus.rect.x -= 4
+            if virus.rect.x < -200:
+                virus.rect.x = random.randint(2000, 3000)
+                virus.rect.y = random.choice(random_y_spawning_positions)
+
+            if virus.rect.colliderect(sniper_rect):
+                stage_of_game = "starting menu"
+                score = 0
+                reset_zombies = True
 
         if fire_bullet_to_catch.visible:
             screen.blit(fire_bullet, fire_bullet_to_catch.rect)
@@ -411,6 +414,9 @@ while True:
             screen.blit(sound_off, sound_rect)
             bullet_sound.set_volume(0)
             fire_shot_sound.set_volume(0)
+
+        if shark_bullet_skill_ready:
+            screen.blit(shark_bullet, shark_bullet_skill_surface)
 
         pygame.display.update()
         clock.tick(60)
