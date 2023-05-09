@@ -106,8 +106,8 @@ SHARK_SKILL_READY = pygame.USEREVENT + 4
 pygame.time.set_timer(SHARK_SKILL_READY, 30000)
 
 # push_skill usable each 45sec
-PUSH_SKILL_READY_45 = pygame.USEREVENT + 5
-pygame.time.set_timer(PUSH_SKILL_READY_45, 45000)
+PUSH_SKILL_READY = pygame.USEREVENT + 5
+pygame.time.set_timer(PUSH_SKILL_READY, 25000)
 
 # creating starting zombies and viruses
 zombies_stage1 = []      # 5x zombie1, 1x zombie2
@@ -326,7 +326,7 @@ while True:
             if event.type == SHARK_SKILL_READY:
                 shark_bullet_skill_ready = True
 
-            if event.type == PUSH_SKILL_READY_45:
+            if event.type == PUSH_SKILL_READY:
                 push_skill_ready = True
 
             if event.type == FIRE_BULLET_EVENT:
