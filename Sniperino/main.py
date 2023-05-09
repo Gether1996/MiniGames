@@ -113,6 +113,7 @@ pygame.time.set_timer(PUSH_SKILL_READY, 25000)
 zombies_stage1 = []      # 5x zombie1, 1x zombie2
 zombies_stage2 = []      # 5x zombie1, 4x zombie2, 1x zombie_boss
 zombies_stage3 = []      # 5x zombie1, 4x zombie2, 3x zombie_boss
+zombies_stage4 = []
 viruses = []             # 1 for each stage
 # zombies 1
 for i in range(6):
@@ -161,8 +162,10 @@ def get_zombie_list_based_on_stage():
         return zombies_stage1
     elif stage_of_game == 2:
         return zombies_stage2
-    else:
+    elif stage_of_game == 3:
         return zombies_stage3
+    else:
+        return zombies_stage4
 
 
 def get_viruses_based_on_stage():
@@ -185,8 +188,8 @@ def reset_zombies_and_viruses_x_position(x_position):
     return velocity
 
 
-def fill_zombies_stage3(zombie_list):
-    for o in range(6):
+def fill_zombies(zombie_list):
+    for o in range(8):
         zombie_to_append = Zombie(zombie1)
         zombie_list.append(zombie_to_append)
     for u in range(4):
@@ -243,7 +246,7 @@ while True:
                 elif boxes[2].collidepoint(event.pos):
                     quit()
 
-    while stage_of_game in [1, 2, 3]:
+    while stage_of_game in [1, 2, 3, 4]:
         if reset_zombies:
             reset_zombies = False
             reset_zombies_and_viruses_x_position(1500)
@@ -251,17 +254,12 @@ while True:
             push_skill_ready = False
         sniper_rect = sniper.get_rect(topleft=(30, sniper_position_y))
         sound_rect = sound_on.get_rect(topleft=(360, 760))
-        again_button = clickable_square.get_rect(topleft=(500, 330))
-        quit_button = clickable_square.get_rect(topleft=(800, 330))
         back_to_menu_surface = clickable_square.get_rect(topleft=(100, 750))
         back_to_menu_text = FONT.render("MENU", True, BLACK)
         shark_key = FONT.render("Y", True, BLACK)
         push_key = FONT.render("X", True, BLACK)
         score_surface = FONT.render(f"Score: {score}", True, BLACK)
         current_stage_surface = FONT_BIGGER.render(f"Stage: {stage_of_game}", True, BLACK)
-        again_text = FONT.render("AGAIN", True, BLACK)
-        quit_text = FONT.render("QUIT", True, BLACK)
-        congratz = FONT_BIGGER.render("CONGRATULATIONS!", True, BLACK)
         velocity = 0.2
         screen.blit(background, (0, 0))
         pygame.draw.rect(screen, BROWN, UI_rect)
@@ -312,15 +310,6 @@ while True:
                     sound_turned_on = True
                 elif back_to_menu_surface.collidepoint(event.pos):
                     stage_of_game = "starting menu"
-                elif again_button.collidepoint(event.pos):
-                    fill_zombies_stage3(zombies_stage3)
-                    score = 0
-                    stage_of_game = 1
-                    reset_zombies = True
-                    summon_final_boss = True
-
-                elif quit_button.collidepoint(event.pos):
-                    quit()
 
             if event.type == ADD_ZOMBIE_EVENT:
                 zombie = Zombie(zombie1)
@@ -368,7 +357,9 @@ while True:
                             zombie.rect.y = random.choice(random_y_spawning_positions[0:4])
                             zombie.hit_points = 12
                         elif zombie.name_image == final_boss:
-                            zombies_stage3.clear()
+                            fill_zombies(zombies_stage4)
+                            stage_of_game = 4
+                            reset_zombies_and_viruses_x_position(1500)
 
         if score > 1000:
             stage_of_game = 2
@@ -381,6 +372,8 @@ while True:
             velocity = 0.1
             pygame.time.set_timer(ADD_ZOMBIE_EVENT, 300000)
             summon_final_boss = False
+        elif score > 4000 and not summon_final_boss:
+            stage_of_game = 4
 
         for zombie in get_zombie_list_based_on_stage():
             velocity += 0.2
@@ -413,13 +406,6 @@ while True:
                 fire_bullet_to_catch.visible = False
                 fire_ammunition = True
                 pygame.time.set_timer(RESET_FIRE_EVENT, 5000)
-
-        if len(zombies_stage3) == 0:
-            screen.blit(again_text, (530, 350))
-            screen.blit(quit_text, (845, 350))
-            screen.blit(congratz, (430, 200))
-            screen.blit(clickable_square, again_button)
-            screen.blit(clickable_square, quit_button)
 
         #######################################################         GAME BAR         ####################
         if sound_turned_on:
