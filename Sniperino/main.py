@@ -10,6 +10,7 @@ clock = pygame.time.Clock()
 # sounds
 bullet_sound = pygame.mixer.Sound('shot_sound.mp3')
 fire_shot_sound = pygame.mixer.Sound('fire_shot_sound.mp3')
+pygame.mixer.music.load('music.mp3')
 
 # images
 background = pygame.image.load('images/background.jpg')
@@ -47,6 +48,7 @@ WHITE = (255, 255, 255)
 FONT = pygame.font.SysFont("Comic Sans MS", 36)
 FONT_BIGGER = pygame.font.SysFont("Comic Sans MS", 60)
 
+# new events
 # new zombie1 added to game each 30 seconds
 ADD_ZOMBIE_EVENT = pygame.USEREVENT + 1
 pygame.time.set_timer(ADD_ZOMBIE_EVENT, 30000)
@@ -107,7 +109,7 @@ class Virus:
 zombies_stage1 = []      # 5x zombie1, 1x zombie2
 zombies_stage2 = []      # 5x zombie1, 4x zombie2, 1x zombie_boss
 zombies_stage3 = []      # 5x zombie1, 4x zombie2, 3x zombie_boss
-viruses = []             # 1 + 1 more for each stage
+viruses = []             # 1 for each stage
 # zombies 1
 for i in range(6):
     zombie = Zombie(zombie1)
@@ -191,6 +193,7 @@ def fill_zombies_stage3(zombie_list):
         zombie_list.append(boss_to_append)
 
 
+pygame.mixer.music.play()
 while True:
     while stage_of_game == "starting menu":
         score_surface = FONT.render(f"Score: {score}", True, BLACK)
@@ -245,7 +248,7 @@ while True:
         again_button = clickable_square.get_rect(topleft=(500, 330))
         quit_button = clickable_square.get_rect(topleft=(800, 330))
         back_to_menu_surface = clickable_square.get_rect(topleft=(400, 780))
-        shark_bullet_skill_surface = shark_bullet.get_rect(topleft=(450, 710))
+        shark_bullet_skill_surface = shark_bullet.get_rect(topleft=(480, 710))
         back_to_menu_text = FONT.render(f"MENU", True, BLACK)
         score_surface = FONT.render(f"Score: {score}", True, BLACK)
         current_stage_surface = FONT.render(f"Stage: {stage_of_game}", True, BLACK)
@@ -410,10 +413,12 @@ while True:
             screen.blit(sound_on, sound_rect)
             bullet_sound.set_volume(0.4)
             fire_shot_sound.set_volume(0.6)
+            pygame.mixer_music.set_volume(1)
         else:
             screen.blit(sound_off, sound_rect)
             bullet_sound.set_volume(0)
             fire_shot_sound.set_volume(0)
+            pygame.mixer_music.set_volume(0)
 
         if shark_bullet_skill_ready:
             screen.blit(shark_bullet, shark_bullet_skill_surface)
