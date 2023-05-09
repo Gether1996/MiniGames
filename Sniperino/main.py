@@ -56,7 +56,7 @@ class Zombie:
             self.hit_points = 12
         else:
             self.rect = self.name_image.get_rect(topleft=(1500, 100))
-            self.hit_points = 36
+            self.hit_points = 50
 
 
 class Bullet:
@@ -357,7 +357,7 @@ while True:
             stage_of_game = 2
         if score > 2500:
             stage_of_game = 3
-        if score > 3500 and summon_final_boss:
+        if score > 4000 and summon_final_boss:
             reset_zombies_and_viruses_x_position(10000)
             dragon = Zombie(final_boss)
             get_zombie_list_based_on_stage().append(dragon)
