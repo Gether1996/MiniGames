@@ -89,24 +89,28 @@ FONT = pygame.font.SysFont("Comic Sans MS", 36)
 FONT_BIGGER = pygame.font.SysFont("Comic Sans MS", 60)
 
 # new events
+# replay song
+SONG_END = pygame.USEREVENT + 1
+pygame.mixer.music.set_endevent(SONG_END)
+
 # new zombie1 added to game each 30 seconds
-ADD_ZOMBIE_EVENT = pygame.USEREVENT + 1
+ADD_ZOMBIE_EVENT = pygame.USEREVENT + 2
 pygame.time.set_timer(ADD_ZOMBIE_EVENT, 30000)
 
 # fire bullet every 20 seconds
-FIRE_BULLET_EVENT = pygame.USEREVENT + 2
+FIRE_BULLET_EVENT = pygame.USEREVENT + 3
 pygame.time.set_timer(FIRE_BULLET_EVENT, 20000)
 
 # 5 seconds of fire ammunition
-RESET_FIRE_EVENT = pygame.USEREVENT + 3
+RESET_FIRE_EVENT = pygame.USEREVENT + 4
 pygame.time.set_timer(RESET_FIRE_EVENT, 5000)
 
 # shark_bullet_skill usable each 30sec
-SHARK_SKILL_READY = pygame.USEREVENT + 4
+SHARK_SKILL_READY = pygame.USEREVENT + 5
 pygame.time.set_timer(SHARK_SKILL_READY, 30000)
 
 # push_skill usable each 45sec
-PUSH_SKILL_READY = pygame.USEREVENT + 5
+PUSH_SKILL_READY = pygame.USEREVENT + 6
 pygame.time.set_timer(PUSH_SKILL_READY, 25000)
 
 # creating starting zombies and viruses
@@ -375,6 +379,10 @@ while True:
                     sound_turned_on = True
                 elif back_to_menu_surface.collidepoint(event.pos):
                     stage_of_game = "starting menu"
+
+            if event.type == SONG_END:
+                pygame.mixer.music.rewind()
+                pygame.mixer.music.play()
 
             if event.type == ADD_ZOMBIE_EVENT:
                 zombie = Zombie(zombie1)
