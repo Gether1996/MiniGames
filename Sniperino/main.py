@@ -301,7 +301,6 @@ while True:
                     input_box_active = True
                 if boxes[0].collidepoint(event.pos):
                     stage_of_game = 1
-                    reset_zombies = True
                     show_info_of_game = False
                     pygame.time.set_timer(ADD_ZOMBIE_EVENT, 30000)
                 elif boxes[1].collidepoint(event.pos):
@@ -319,6 +318,7 @@ while True:
             push_skill_ready = False
             pygame.time.set_timer(SHARK_SKILL_READY, 30000)
             pygame.time.set_timer(PUSH_SKILL_READY, 25000)
+            bullets.clear()
         sniper_rect = sniper.get_rect(topleft=(30, sniper_position_y))
         sound_rect = sound_on.get_rect(topleft=(360, 760))
         back_to_menu_surface = clickable_square.get_rect(topleft=(100, 750))
@@ -357,6 +357,7 @@ while True:
                         bullets.append(new_bullet)
                 if event.key == pygame.K_ESCAPE:
                     stage_of_game = "starting menu"
+                    score = 0
                     reset_zombies = True
                 if event.key == pygame.K_y and shark_bullet_skill_ready:
                     shark_bullet_skill_ready = False
@@ -379,6 +380,8 @@ while True:
                     sound_turned_on = True
                 elif back_to_menu_surface.collidepoint(event.pos):
                     stage_of_game = "starting menu"
+                    score = 0
+                    reset_zombies = True
 
             if event.type == SONG_END:
                 pygame.mixer.music.rewind()
@@ -436,10 +439,6 @@ while True:
                             fill_zombies(zombies_stage4)
                             reset_zombies_and_viruses_x_position(1500)
 
-        if score > 1000:
-            stage_of_game = 2
-        if score > 2500:
-            stage_of_game = 3
         if score > 4000 and summon_final_boss:
             reset_zombies_and_viruses_x_position(10000)
             dragon = Zombie(final_boss)
@@ -447,8 +446,12 @@ while True:
             velocity = 0.1
             pygame.time.set_timer(ADD_ZOMBIE_EVENT, 300000)
             summon_final_boss = False
-        if score > 4000 and infinite_game:
+        elif score > 4000 and infinite_game:
             stage_of_game = 4
+        elif score > 2500:
+            stage_of_game = 3
+        elif score > 1000:
+            stage_of_game = 2
 
         for zombie in get_zombie_list_based_on_stage():
             velocity += 0.2
