@@ -179,9 +179,9 @@ def update_best_score(points, name):
     if points > best_score and len(name) > 0:
         with open("record.txt", "w") as f:
             f.write(str(points) + "\n" + name)
-    else:
+    elif points > best_score and len(name) == 0:
         with open("record.txt", "w") as f:
-            f.write(str(points) + "\n" + "Unknown")
+            f.write(str(points))
 
 
 def get_zombie_list_based_on_stage():
@@ -313,6 +313,8 @@ while True:
             reset_zombies_and_viruses_x_position(1500)
             shark_bullet_skill_ready = False
             push_skill_ready = False
+            pygame.time.set_timer(SHARK_SKILL_READY, 30000)
+            pygame.time.set_timer(PUSH_SKILL_READY, 25000)
         sniper_rect = sniper.get_rect(topleft=(30, sniper_position_y))
         sound_rect = sound_on.get_rect(topleft=(360, 760))
         back_to_menu_surface = clickable_square.get_rect(topleft=(100, 750))
@@ -354,12 +356,14 @@ while True:
                     reset_zombies = True
                 if event.key == pygame.K_y and shark_bullet_skill_ready:
                     shark_bullet_skill_ready = False
+                    pygame.time.set_timer(SHARK_SKILL_READY, 30000)
                     for i in range(1, 6):
                         new_shark_bullet = Bullet(shark_bullet)
                         new_shark_bullet.rect.y = 60 + 140*(i-1)
                         bullets.append(new_shark_bullet)
                 if event.key == pygame.K_x and push_skill_ready:
                     push_skill_ready = False
+                    pygame.time.set_timer(PUSH_SKILL_READY, 25000)
                     for zombie in get_zombie_list_based_on_stage():
                         zombie.rect.x += 400
 
@@ -378,9 +382,11 @@ while True:
 
             if event.type == SHARK_SKILL_READY:
                 shark_bullet_skill_ready = True
+                pygame.time.set_timer(SHARK_SKILL_READY, 0)
 
             if event.type == PUSH_SKILL_READY:
                 push_skill_ready = True
+                pygame.time.set_timer(PUSH_SKILL_READY, 0)
 
             if event.type == FIRE_BULLET_EVENT:
                 fire_bullet_to_catch.rect.x = 1600
@@ -445,10 +451,12 @@ while True:
                 stage_of_game = "starting menu"
                 update_best_score(score, player_name)
                 score = 0
+                reset_zombies = True
             if zombie.rect.x < -100:
                 stage_of_game = "starting menu"
                 update_best_score(score, player_name)
                 score = 0
+                reset_zombies = True
 
         for virus in get_viruses_based_on_stage():
             screen.blit(virus.image, virus.rect)
