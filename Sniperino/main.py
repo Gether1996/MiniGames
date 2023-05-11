@@ -237,9 +237,9 @@ pygame.mixer.music.play()
 while True:
     while stage_of_game == "starting menu":
         player_name_rect = pygame.Rect(150, 50, 350, 100)
-        player_name_rect_color = (0, 255, 127)
-        player_name_rect_hover_color = (60, 179, 113)
-        input_box_rect = pygame.Rect(130, 40, 370, 120)
+        player_name_rect_color = (200, 200, 200)
+        player_name_rect_hover_color = (200, 20, 20)
+        input_box_rect = pygame.Rect(140, 40, 370, 120)
         enter_name = FONT_BIGGER.render("Enter name", True, BLACK)
         got_name = FONT_BIGGER.render(f"{player_name}", True, BLACK)
         sniperino_surface = FONT_BIGGER.render("SNIPERINO", True, BLACK)
@@ -273,7 +273,7 @@ while True:
         else:
             pygame.draw.rect(screen, player_name_rect_color, player_name_rect)
         if input_box_active:
-            pygame.draw.rect(screen, WHITE, input_box_rect)
+            pygame.draw.rect(screen, (200, 20, 20), input_box_rect)
 
         if len(player_name) > 0:
             screen.blit(got_name, (165, 60))
