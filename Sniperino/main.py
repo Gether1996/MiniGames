@@ -289,7 +289,7 @@ while True:
                 if event.key == pygame.K_ESCAPE:
                     quit()
                 if input_box_active:
-                    if event.key == pygame.K_RETURN and len(player_name) > 0:
+                    if (event.key == pygame.K_RETURN or event.key == pygame.K_KP_ENTER) and len(player_name) > 0:
                         input_box_active = False
                         got_player_name = True
                     elif event.key == pygame.K_BACKSPACE:
