@@ -23,6 +23,8 @@
  - Start game
  - Info (showing HP and damage of zombies/bullets, game controls etc.)
  - Quit the game
+
+
 ![menu](screenz/menu.jpg)
 
  ### Stage1
