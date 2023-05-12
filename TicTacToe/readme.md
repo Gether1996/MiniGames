@@ -11,7 +11,7 @@
    - Counter of X's wins and O's wins
  - If all 9 squares are filled out and nobody wins, you can press AGAIN button to start over again
  - If winner is decided, whole screen turns to black, saying who has won and after 1 second, game resets
-
+ - In download_link.txt you can find the game in .exe file, just extract files from downloaded .zip
 
 
  ## Ongoing game

@@ -14,6 +14,7 @@
    - and highest local record (starting fresh at 1000, changing to users best score - lowest mismatches)
  - After user reveal whole board, he/she is asked to play another game or quit
  - If user starts a new game, whole board gets hidden, mismatches will reset to 0 and record is rewritten(if user scored better than previous record)
+ - In download_link.txt you can find the game in .exe file, just extract files from downloaded .zip
 
 
  ## New game

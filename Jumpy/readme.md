@@ -11,6 +11,7 @@
    - if player lose all 3 lives - game ends
  - Timer in top-right corner of game - try to survive as long as possible!
  - Bottom-right corner indicates how can a player control Jumpy
+ - In download_link.txt you can find the game in .exe file, just extract files from downloaded .zip
 
 
  ## Game
