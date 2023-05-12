@@ -34,6 +34,8 @@
    - Sound on/off
    - Skills, triggered by X or Y keys
    - Score and current stage
+
+
 ![stage1](screenz/stage1.jpg)
 
  ### Stage3
